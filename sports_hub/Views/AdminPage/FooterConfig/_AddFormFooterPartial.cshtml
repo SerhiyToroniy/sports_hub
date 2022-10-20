@@ -1,0 +1,68 @@
+﻿@model sports_hub.Models.Entities.FooterPage
+
+<head>
+    <link rel="stylesheet" href="~/css/footerconfig.css">
+</head>
+<div class="new-page-button-area">
+    <button class="new-page-button" onclick="openForm()">+ New footer page</button>
+</div>
+<style>
+    #error-text {
+        padding-left: 53px;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 10px;
+        line-height: 14px;
+        /* identical to box height */
+        /* Main color */
+        color: #D72130;
+        visibility: hidden;
+    }
+</style>
+<div class="add-form" id="AddForm">
+    <form asp-action="Create">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="form-header-add-page">
+            <span class="form-header-label">Add new footer page</span>
+        </div>
+        <div class="headline-area-add-page">
+            <label asp-for="Name" class="name">Name</label>
+            <input type="text" required="required" asp-for="Name" class="input-name" id="name-field" placeholder="Name your footer page" />
+        </div>
+        <span id="error-text">You should name page before adding!</span>
+        <input asp-for="Section" value="@ViewData["SectionName"]" readonly class="form-control" type="hidden" />
+        <input asp-for="Content" value="&nbsp;" readonly class="form-control" type="hidden" />
+        <div class="add-form-area-buttons">
+            <button type="button" onclick="closeForm()" class="add-form-add-button">Cancel</button>
+            <input type="submit" class="add-form-cancel-button" value="Add">
+        </div>
+    </form>
+</div>
+
+<script>
+    function openForm() {
+        document.getElementById("AddForm").style.display = "block";
+    }
+
+    function closeForm() {
+        document.getElementById("AddForm").style.display = "none";
+        var errorTextSpan = document.getElementById("error-text");
+        errorTextSpan.style.visibility = "hidden";
+        var inputName = document.getElementById("name-field");
+        inputName.style.border = "1px solid #D4D9E2";
+    }
+    document.addEventListener('invalid', (function () {
+        return function (e) {
+            e.preventDefault();
+            var inputName = document.getElementById("name-field");
+            inputName.style.border = "1px solid #D72130";
+            var errorTextSpan = document.getElementById("error-text");
+            errorTextSpan.style.visibility = "visible";
+            errorTextSpan.innerText = "You should name page before adding!";
+        };
+    })(), true);
+
+</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

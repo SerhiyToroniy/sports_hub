@@ -1,0 +1,184 @@
+﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Options
+@model IEnumerable<sports_hub.Models.Entities.Language>
+@inject IOptions<RequestLocalizationOptions> LocOptions
+
+@{
+    Layout = "/Views/AdminPage/_Layout.cshtml";
+    ViewData["Title"] = "Languages";
+
+    var cultureItems = LocOptions.Value.SupportedUICultures
+    .Select(c => new SelectListItem { Value = c.Name, Text = c.TwoLetterISOLanguageName })
+    .ToList();
+}
+
+
+@section sectionInteractButtons {
+    <button onclick="callCancelAttentionWindow(true)" id="buttonAddNewLanguage">+ New Language</button>
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/AdminPage/languages.css" />
+</head>
+<body>
+        <div id="cancelAttention">
+            <div class="cancelAttentionWindow">
+                <div class="cancelAttentionWindowTextContainer">
+                    <h3 id="titleAddNewLanguageWindow">Add language</h3>
+                    <div id="languageContainer">
+                        <span class="cancelAttentionWindowText">select language</span>
+                        <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Select language
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+                            <div class="dropdown-item">
+                                <img src="~/imagesAdminPage/EnglishFlagIcon.svg" />
+                                <label class="languageLabel">English</label>
+                                <input id="English" name="languageCheckbox" type="checkbox" />
+                            </div>
+                            <div class="dropdown-item">
+                                <img src="~/imagesAdminPage/UkrainianFlagIcon.svg" />
+                                <label class="languageLabel">Ukrainian</label>
+                                <input id="Ukrainian" name="languageCheckbox" type="checkbox" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cancelAttentionWindowButtonsContainer">
+                        <span class="cancelAttentionWindowButtonNo" onclick="callCancelAttentionWindow(false)">Cancel</span>
+                        <button type="submit" onclick="addNewLanguage()" class="cancelAttentionWindowButtonYes">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="all_section">
+            <div class="menu">
+                <div class="menu-header">
+                    <span class="first-column">Language</span>
+                    <span class="second-column">Hide/Show</span>
+                    <span class="third-column"></span>
+                </div>
+
+                @{ foreach (var language in ViewBag.Languages)
+                    {
+                        string row_id = Guid.NewGuid().ToString();
+
+                        <div class="menu-page">
+                            <label class="page-name">@language.Name</label>
+                            <div class="switch-area">
+                                <div class="switch_and_text">
+                                    @{
+                                        string r = Guid.NewGuid().ToString();
+                                    }
+                                    @{ if (language.Visible == true)
+                                        {
+
+                                            <label class="switch">
+                                                <input type="checkbox" checked onclick="changePageVisibility('@language.Id', '@r')" />
+                                                <div class="slider round"></div>
+                                            </label>
+                                            <p class="text" id="@r"> Show </p>
+                                        }
+                                        else
+                                        {
+                                            <label class="switch">
+                                                <input type="checkbox" onclick="changePageVisibility('@language.Id', '@r')" />
+                                                <div class="slider round"></div>
+                                            </label>
+                                            <p class="text" id="@r">Hide</p>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            @{
+                                if (language.Name != "English")
+                                {
+                                    <div class="delete-button-area">
+                                        <button class="delete_button" onclick="deletePage('@language.Id')"><img class="delete" src="~/imagesAdminPage/Group.svg" /></button>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    }
+                }
+            </div>
+
+
+        </div>
+</body>
+
+<script>
+    function callCancelAttentionWindow(show) {
+        cancelAttentionWindow = document.getElementById("cancelAttention");
+        if (show) {
+            cancelAttentionWindow.style.display = "block";
+        }
+        else {
+            cancelAttentionWindow.style.display = "none";
+        }
+    }
+
+            function changePageVisibility(intValue, htmlid) {
+            let x = 1;
+             $.ajax({
+                    url: '@Url.Action("LanguageVisibleGet","AdminPage")',
+                    type: "GET",
+                    async: false,
+                    data: { id: intValue},
+                    success: function (res) {
+                        x = res;
+                    }
+             });
+            let text_s = document.getElementById(htmlid);
+            if (x === "yes") {
+                $.ajax({
+                    url: '@Url.Action("ChangeLanguageVisibility", "AdminPage")',
+                    type: "POST",
+                    data: { id: intValue, vi: false },
+                    success: function () {
+                    }
+                });
+                text_s.innerText = "Hide";
+            } else {
+                $.ajax({
+                    url: '@Url.Action("ChangeLanguageVisibility", "AdminPage")',
+                    type: "POST",
+                    data: { id: intValue, vi: true },
+                    success: function () {
+                    }
+                });
+                text_s.innerText = "Show";
+            }
+    }
+
+    function deleteLanguage(elementId) {
+        $.ajax({
+                url: '@Url.Action("DeleteLanguage","AdminPage")',
+            type: "DELETE",
+            data: { id: elementId },
+                success: function (res) {
+                    location.href = res;
+                }
+            });
+    }
+
+    function addNewLanguage() {
+        let languagesID = [];
+        const checkboxes = document.querySelectorAll('input[name="languageCheckbox"]:checked');
+        checkboxes.forEach((checkbox) => {
+            languagesID.push(checkbox.id);
+        });
+        $.ajax({
+                url: '@Url.Action("AddNewLanguage","AdminPage")',
+            type: "POST",
+            data: { langs: languagesID },
+            success: function (res) {
+                location.href = res;
+            }
+            });
+
+    }
+
+</script>

@@ -1,0 +1,42 @@
+﻿.buttonBigger {
+    position: relative;
+    display: block;
+    top: 30%;
+    left: 30%;
+    font-size: 13px;
+    width: 134px;
+    height: 32px;
+    border: none;
+    color: white;
+    background-color: #d72130;
+    cursor: pointer;
+}
+
+.buttonSmaller {
+    position: relative;
+    top: 30%;
+    left: 35%;
+    font-size: 13px;
+    width: 100px;
+    height: 36px;
+    border: none;
+    color: white;
+    background-color: #d72130;
+    cursor: pointer;
+    outline: none;
+}
+
+.buttonCancel {
+    position: relative;
+    top: 30%;
+    left: 25%;
+    font-size: 13px;
+    font-weight: 600;
+    user-select: none;
+    cursor: pointer;
+    color: #d72130;
+}
+
+.buttonCancel:hover {
+    text-decoration: underline;
+}

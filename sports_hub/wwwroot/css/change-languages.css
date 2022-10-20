@@ -1,0 +1,23 @@
+﻿select {
+    color: black;
+    font-family: Open Sans;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 19px;
+    letter-spacing: 0px;
+    text-align: left;
+    display: block;
+    padding: .5rem 1rem;
+    text-decoration: none;
+    background-color: transparent;
+    text-transform: uppercase;
+    border-color: white;
+    outline: 0px;
+}
+option {
+    border: none;
+    outline: 0px;
+    width: 100%;
+    padding-right: 5%;
+}

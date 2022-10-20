@@ -1,0 +1,392 @@
+﻿@{
+    Layout = "../Shared/_Layout";
+    ViewData["Title"] = ViewBag.Category;
+}
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@inject IViewLocalizer Localizer
+@using Microsoft.AspNetCore.Identity
+@using sports_hub.Models.Entities
+@using System.Globalization;
+@inject UserManager<User> UserManager
+@model sports_hub.Models.ViewModels.CommentViewModel
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/css/Article/get-article.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="article-path">
+            <div class="category">@ViewBag.Category</div>
+            <div class="separate-path-sign">></div>
+            <div class="title">@ViewBag.ArticleTitle</div>
+            <div class="clear"></div>
+        </div>
+        <div class="article-img" style="background-image: url(data:image/png;base64,@Convert.ToBase64String(ViewBag.ArticleImage))"></div>
+        <div class="article-desc">@ViewBag.Description</div>
+        @if (ViewBag.ViewComments != null && ViewBag.ViewComments)
+        {
+
+            <div class="comments-section">
+                <div class="comments-upper">
+                    <div class="comments-counter">COMMENTS (@ViewBag.CommentsCount)</div>
+                    <div class="comments-filter">
+                        <div class="comments-filter-options">
+                            Sort by:
+                            <select class="comments-filter-options-select" onchange="window.location.href=this.value">
+                                <option class="filter-options" value="/Article/GetArticle?id=@ViewBag.ArticleId&&commentsSortedBy=0">Most popular</option>
+                                <option class="filter-options" value="/Article/GetArticle?id=@ViewBag.ArticleId&&commentsSortedBy=1">Oldest first</option>
+                                <option class="filter-options" value="/Article/GetArticle?id=@ViewBag.ArticleId&&commentsSortedBy=2">Newest first</option>
+                            </select>
+                            <script>
+                                document.querySelector('.comments-filter-options-select').selectedIndex = @ViewBag.CommentsSortedBy;
+                            </script>
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+                <script>
+                    var firstClickLikes = true;
+                    var incrementLikes = true;
+
+                    var firstClickDislikes = true;
+                    var incrementDislikes = true;
+                </script>
+                <div class="comments-center">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        var user = await UserManager.GetUserAsync(User);
+                        var name = user.FirstName;
+                        var surname = user.LastName;
+                        string image = Convert.ToBase64String(user.ProfileImage);
+                        <div class="comments-input">
+                            <div class="profile-photo">
+                                <img id="comment_in" src="data:image/png; base64, @image" style="width: 50px; border-radius: 50%; height: 50px; margin: 20px 0px 0px 30px;" />
+                            </div>
+                            <div class="input-box">
+                                <form method="post" asp-controller="Article" asp-action="Comment" class="comment-form">
+                                    <input asp-for="ArticleId" type="hidden" value="@ViewBag.ArticleId" />
+                                    <input asp-for="MainCommentId" type="hidden" />
+                                    <input asp-for="Name" type="hidden" value="@name" />
+                                    <input asp-for="Surname" type="hidden" value="@surname" />
+                                    <input asp-for="Photo" type="hidden" value="@image" />
+                                    <input class="input-box-txt" placeholder="Write a comment" asp-for="CommentText" />
+                                    <button class="input-box-cancel" type="reset">Cancel</button>
+                                    <button class="input-box-submit" type="submit">Submit</button>
+                                </form>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    }
+
+                    <div class="users-comments">
+                        @{
+                            var comments_counter = 0;
+                            var height_more = ViewBag.VisisbleCommentsCounter * 150 + 400;
+                            if (User.Identity.IsAuthenticated)
+                                height_more = ViewBag.VisisbleCommentsCounter * 150 + 450;
+                            var height_more_center = $"{height_more - 200}px";
+                            var height_more_center_auth = $"{height_more - 300}px";
+                            var height_more_auth = $"{height_more - 100}px";
+                            height_more = $"{height_more}px";
+                        }
+                        @for (int i = 0; i < ViewBag.MainComments.Count; i++)
+                        {
+                            var MainCommentId = ViewBag.MainComments[i].Id;
+                            @if (comments_counter < ViewBag.VisisbleCommentsCounter)
+                            {
+                                <div class="comment">
+                                    <div class="profile-photo" style="border: 0px;">
+                                        <img src="data:image/png; base64, @Convert.ToBase64String(ViewBag.MainComments[i].AuthorPhoto)" style="width: 50px; border-radius: 50%; height: 50px; margin: 10px 0px 0px 30px;" />
+                                    </div>
+                                    <div class="input-box" style="width:80%; height: 40%;">
+                                        <div class="user-name-surname">@ViewBag.MainComments[i].AuthorName @ViewBag.MainComments[i].AuthorSurname</div>
+                                        <div class="under-name">
+                                            @{var fancy_date = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(ViewBag.MainComments[i].PublishDate.Month) + " " + ViewBag.MainComments[i].PublishDate.Day;}
+                                            <div class="comment-date">@fancy_date</div>
+                                            @if (ViewBag.MainComments[i].IsEdited)
+                                            {
+                                                <div class="comment-isEdited">edited</div>
+                                            }
+                                            else
+                                            {
+                                                <div class="comment-isEdited"></div>
+                                            }
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="comment-text">@ViewBag.MainComments[i].Content</div>
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                                <div class="under-text">
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        var user = await UserManager.GetUserAsync(User);
+                                        string id = user.Id;
+                                        <div class="rating">
+                                            <div class="rating-type">
+                                                <div class="rating-img-like" onclick="LikeComment('@id', @ViewBag.MainComments[i].Id, true, @comments_counter)"></div>
+                                                <div class="rating-counter-likes">@ViewBag.MainComments[i].LikesCount</div>
+                                            </div>
+                                            <div class="rating-type">
+                                                <div class="rating-img-dislike" onclick="DislikeComment('@id', @ViewBag.MainComments[i].Id, true, @comments_counter)"></div>
+                                                <div class="rating-counter-dislikes">@ViewBag.MainComments[i].DislikesCount</div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="rating">
+                                            <div class="rating-type">
+                                                <a href="/Account/Login"><div class="rating-img-like"></div></a>
+                                                <div class="rating-counter-likes">@ViewBag.MainComments[i].LikesCount</div>
+                                            </div>
+                                            <div class="rating-type">
+                                                <a href="/Account/Login"><div class="rating-img-dislike"></div></a>
+                                                <div class="rating-counter-dislikes">@ViewBag.MainComments[i].DislikesCount</div>
+                                            </div>
+                                        </div>
+                                    }
+
+                                    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                                    <script>
+                                        function LikeComment(userId, commentId, isMainComment, index) {
+                                            $(document).ready(function () {
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url: "@Url.Action("LikeComment", "Article")",
+                                                    data: { UserId: userId, ArticleId: @ViewBag.ArticleId, CommentId: commentId, IsMainComment: isMainComment, IsIncrement: incrementLikes },
+                                                    dataType: "json",
+                                                    success: function (msg) {
+                                                        var x = parseInt(document.getElementsByClassName('rating-counter-likes')[index].innerHTML);
+                                                        if (firstClickLikes) {
+                                                            document.getElementsByClassName('rating-counter-likes')[index].innerHTML = x + 1;
+                                                            document.getElementsByClassName('rating-img-like')[index].setAttribute("style", "background-image: url('../../images/Article/Like_active.png');");
+                                                            firstClickLikes = false;
+                                                            incrementLikes = false;
+                                                        }
+                                                        else {
+                                                            document.getElementsByClassName('rating-counter-likes')[index].innerHTML = x - 1;
+                                                            document.getElementsByClassName('rating-img-like')[index].setAttribute("style", "background-image: url('../../images/Article/Like_unactive.png');");
+                                                            firstClickLikes = true;
+                                                            incrementLikes = true;
+                                                        }
+                                                    },
+                                                    error: function (req, status, error) {
+                                                    }
+                                                });
+                                            });
+                                        }
+                                        function DislikeComment(userId, commentId, isMainComment, index) {
+                                            $(document).ready(function () {
+                                                $.ajax({
+                                                    type: "POST",
+                                                    url: "@Url.Action("DislikeComment", "Article")",
+                                                    data: { UserId: userId, ArticleId: @ViewBag.ArticleId, CommentId: commentId, IsMainComment: isMainComment, IsIncrement: incrementDislikes },
+                                                    dataType: "json",
+                                                    success: function (msg) {
+                                                        var x = parseInt(document.getElementsByClassName('rating-counter-dislikes')[index].innerHTML);
+                                                        if (firstClickDislikes) {
+                                                            document.getElementsByClassName('rating-counter-dislikes')[index].innerHTML = x + 1;
+                                                            document.getElementsByClassName('rating-img-dislike')[index].setAttribute("style", "background-image: url('../../images/Article/Like_active.png');");
+                                                            firstClickDislikes = false;
+                                                            incrementDislikes = false;
+                                                        }
+                                                        else {
+                                                            document.getElementsByClassName('rating-counter-dislikes')[index].innerHTML = x - 1;
+                                                            document.getElementsByClassName('rating-img-dislike')[index].setAttribute("style", "background-image: url('../../images/Article/Like_unactive.png');");
+                                                            firstClickDislikes = true;
+                                                            incrementDislikes = true;
+                                                        }
+                                                    },
+                                                    error: function (req, status, error) {
+                                                    }
+                                                });
+                                            });
+                                        }
+                                    </script>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        var user = await UserManager.GetUserAsync(User);
+                                        string name = user.FirstName;
+                                        string surname = user.LastName;
+                                        string image = Convert.ToBase64String(user.ProfileImage);
+                                        <div class="comment-reply" onclick="ReplyToComment(@i)" style="text-align:right;">Comment</div>
+                                        <form style="display:none; margin: 0px 0px 0px 20%; border-bottom: 1px solid lightgray; width: 70%" ; method="post" asp-controller="Article" asp-action="Comment" class="comment-form">
+                                            <input asp-for="ArticleId" type="hidden" value="@ViewBag.ArticleId" />
+                                            <input asp-for="MainCommentId" type="hidden" value="@MainCommentId" />
+                                            <input asp-for="Name" type="hidden" value="@name" />
+                                            <input asp-for="Surname" type="hidden" value="@surname" />
+                                            <input asp-for="Photo" type="hidden" value="@image" />
+                                            <input class="input-box-txt" placeholder="Reply to this comment" asp-for="CommentText" />
+                                            <button class="input-box-cancel" type="reset">Cancel</button>
+                                            <button class="input-box-submit" type="submit">Submit</button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <div class="comment-reply" style="display: none;">Comment</div>
+                                    }
+                                </div>
+                                comments_counter += 1;
+                                @for (int j = 0; j < ViewBag.SubComments.Count; j++)
+                                {
+                                    @if (ViewBag.SubComments[j].MainCommentId == ViewBag.MainComments[i].Id && comments_counter < ViewBag.VisisbleCommentsCounter)
+                                    {
+                                        <div class="subcoment" style="margin: 10px 0px 0px 100px">
+                                            <div class="comment">
+                                                <div class="profile-photo" style="border: 0px;">
+                                                    <img id="comment_in" src="data:image/png; base64, @Convert.ToBase64String(ViewBag.SubComments[j].AuthorPhoto)" style="width: 50px; border-radius: 50%; height: 50px; margin: 20px 0px 0px 30px;" />
+                                                </div>
+                                                <div class="input-box" style="width:80%; height: 40%;">
+                                                    <div class="user-name-surname">@ViewBag.SubComments[j].AuthorName @ViewBag.SubComments[j].AuthorSurname</div>
+                                                    <div class="under-name">
+                                                        @{var fancy_date_sub = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(ViewBag.SubComments[j].PublishDate.Month) + " " + ViewBag.SubComments[j].PublishDate.Day;}
+                                                        <div class="comment-date">@fancy_date</div>
+                                                        @if (ViewBag.SubComments[j].IsEdited)
+                                                        {
+                                                            <div class="comment-isEdited">edited</div>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div class="comment-isEdited"></div>
+                                                        }
+                                                        <div class="clear"></div>
+                                                    </div>
+                                                    <div class="comment-text">@ViewBag.SubComments[j].Content</div>
+                                                </div>
+                                                <div class="clear"></div>
+                                            </div>
+                                            <div class="under-text">
+                                                @if (User.Identity.IsAuthenticated)
+                                                {
+                                                    var user = await UserManager.GetUserAsync(User);
+                                                    string id = user.Id;
+                                                    <div class="rating">
+                                                        <div class="rating-type">
+                                                            <div class="rating-img-like" onclick="LikeComment('@id', @ViewBag.SubComments[j].Id, false, @comments_counter)"></div>
+                                                            <div class="rating-counter-likes">@ViewBag.SubComments[j].LikesCount</div>
+                                                        </div>
+                                                        <div class="rating-type">
+                                                            <div class="rating-img-dislike" onclick="DislikeComment('@id', @ViewBag.SubComments[j].Id, false, @comments_counter)"></div>
+                                                            <div class="rating-counter-dislikes">@ViewBag.SubComments[j].DislikesCount</div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="rating">
+                                                        <div class="rating-type">
+                                                            <a href="/Account/Login"><div class="rating-img-like"></div></a>
+                                                            <div class="rating-counter-likes">@ViewBag.SubComments[j].LikesCount</div>
+                                                        </div>
+                                                        <div class="rating-type">
+                                                            <a href="/Account/Login"><div class="rating-img-dislike"></div></a>
+                                                            <div class="rating-counter-dislikes">@ViewBag.SubComments[j].DislikesCount</div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                        comments_counter += 1;
+                                    }
+                                }
+                            }
+
+                        }
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <style>
+                                        .users-comments {
+                                            margin: 2% 0px 0px 0px;
+                                        }
+                                        .comments-section {
+                                            height: @height_more_auth;
+                                        }
+                                        .comments-center{
+                                            height: @height_more_center_auth;
+                                        }
+                            </style>
+                        }
+                        else
+                        {
+                            <style>
+                            .comments-section {
+                                height: @height_more;
+                            }
+                            .comments-center{
+                                height: @height_more_center;
+                            }
+                            </style>
+                        }
+                    </div>
+                </div>
+                <div class="comments-more">
+                    <div class="show-more-text">@ViewBag.ShowMoreButtonText</div>
+                    @{
+                        if (ViewBag.ShowMoreButtonText == "Show more")
+                        {
+                            <a class="comments-more-button" href="/Article/GetArticle?id=@ViewBag.ArticleId&&commentsSortedBy=@ViewBag.CommentsSortedBy&&visisbleCommentsCounter=20"><div class="comments-more-button" style="transform: rotate(@ViewBag.ShowMoreButtonRotationDegree);"></div></a>
+                        }
+                        if (ViewBag.ShowMoreButtonText == "Show less")
+                        {
+                            <a class="comments-more-button" href="/Article/GetArticle?id=@ViewBag.ArticleId&&commentsSortedBy=@ViewBag.CommentsSortedBy&&visisbleCommentsCounter=0"><div class="comments-more-button" style="transform: rotate(@ViewBag.ShowMoreButtonRotationDegree);"></div></a>
+                        }
+                    }
+                </div>
+            </div>
+        }
+        @if (ViewBag.MoreArticles.Count > 0)
+        {
+            <div class="more-articles-separator"></div>
+            <div class="more-articles">
+                <div class="left-more-articles">
+                    @{int counter = 0; }
+                    @foreach (var item in ViewBag.MoreArticles)
+                    {
+                        if (counter < @ViewBag.MoreArticlesSideMaxNumber)
+                        {
+                            <a class="subarticle-href" href="/Article/GetArticle?id=@item.Id">
+                                <div class="subarticle">
+                                    <div class="subarticle-img" style="background-image: url(data:image/png;base64,@Convert.ToBase64String(item.Image))"></div>
+                                    @*<div class="subarticle-img"></div>*@
+                                    <div class="right-subarticle">
+                                        <div class="subarticle-title">@item.Headline</div>
+                                        <div class="subarticle-description">@item.Caption</div>
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                            </a>
+                        }
+                        counter++;
+                    }
+                </div>
+                <div class="right-more-articles">
+                    @for (int i = @ViewBag.MoreArticlesSideMaxNumber; i < ViewBag.MoreArticles.Count; i++)
+                    {
+                        <a class="subarticle-href" href="/Article/GetArticle?id=@ViewBag.MoreArticles[i].Id">
+                            <div class="subarticle">
+                                <div class="subarticle-img" style="background-image: url(data:image/png;base64,@Convert.ToBase64String(ViewBag.MoreArticles[i].Image))"></div>
+                                @*<div class="subarticle-img"></div>*@
+                                <div class="right-subarticle">
+                                    <div class="subarticle-title">@ViewBag.MoreArticles[i].Headline</div>
+                                    <div class="subarticle-description">@ViewBag.MoreArticles[i].Caption</div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </a>
+                    }
+                </div>
+                <div class="clear"></div>
+
+            </div>
+        }
+        <div class="render-body">
+            @RenderBody()
+        </div>
+    </div>
+    <script src="~/js/HomeScript.js"></script>
+    <script src="~/js/ArticleScript.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

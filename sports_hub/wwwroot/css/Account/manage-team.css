@@ -1,0 +1,169 @@
+﻿.main-content {
+    width: 284px;
+    height: 454px;
+    background: #F8F8F8;
+    margin: 75px 0px -20px 450px;
+}
+
+.headline {
+    width: 284px;
+    height: 48px;
+    background: #F2F2F2;
+}
+
+.manage-team-headline {
+    width: 284px;
+    height: 48px;
+    background: #F8F8F8;
+}
+
+.text {
+    padding-top: 14px;
+    padding-left: 20px;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 19px;
+    color: #434C5D;
+}
+
+.text_manage_teams {
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 17px;
+    padding-top: 17px;
+    padding-left: 20px;
+    color: #D72130;
+}
+
+.line {
+    width: 284px;
+    height: 1px;
+    background: #D8D8D8;
+    border: 1px solid #D8D8D8;
+}
+
+.line1 {
+    width: 284px;
+    height: 1px;
+    background: #D8D8D8;
+}
+
+.block {
+    height: 89px;
+    width: 270px;
+    display: flex;
+    flex-direction: row;
+    column-gap: 17px;
+    padding-left: 19px;
+    padding-top: 14px;
+}
+
+    .block:hover {
+        background: rgba(215, 33, 48, 0.11);
+    }
+
+        .block:hover .delete_but {
+            display: block;
+        }
+
+.text-inside-block {
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    grid-row-gap: 5px;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 19px;
+    color: #2B2F43;
+}
+
+.list_of_teams {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    height: 302px;
+    width: 284px;
+}
+
+.search_team {
+    height: 80px;
+    width: 248px;
+    display: flex;
+    flex-direction: row;
+    padding-left: 17px;
+    padding-top: 25px;
+}
+
+.search_input {
+    outline: none;
+    border: none;
+    width: 175px;
+    height: 32px;
+    border: 1px solid #D8D8D8;
+    box-sizing: border-box;
+}
+
+.follow-button {
+    width: 74px;
+    height: 32px;
+    background: #D72130;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 17px;
+    /* identical to box height, or 142% */
+    text-align: center;
+    outline: none;
+    border: none;
+    color: #FFF5F5;
+}
+
+.text-and-delete {
+    display: flex;
+    flex-direction: row;
+    column-gap: 62px;
+}
+
+.delete_but {
+    display: none;
+    background-color: transparent;
+    outline: none;
+    border: none;
+}
+
+.dropdown-content {
+    margin-top: 32px;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 17px;
+    color: #7F7B7B;
+    display: none;
+    position: absolute;
+    background-color: white;
+    width: 174px;
+    height: 41px;
+    text-align: left;
+    z-index: 1;
+    box-shadow: 0px 2px 14px rgba(0, 0, 0, 0.0949246);
+}
+
+    .dropdown-content a {
+        color: black;
+        padding: 12px;
+        background-color: white;
+        text-decoration: none;
+        display: block;
+    }
+
+        .dropdown-content a:hover {
+            background: pink;
+            color: black;
+        }

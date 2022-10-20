@@ -1,0 +1,202 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+
+@inject IViewLocalizer Localizer
+
+@model IEnumerable<sports_hub.Models.Entities.FooterPage>
+
+<head>
+    <link rel="stylesheet" href="~/css/AdminPage/footerconfig.css">
+</head>
+<style>
+    .first-column {
+        padding-left: 35px;
+    }
+
+    .second-column {
+        padding-left: 205px;
+    }
+
+    .third-column {
+        padding-left: 51px;
+    }
+</style>
+<body>
+    <div class="section-headers">
+        <a class="navSectionLink" href="/AdminPage/FooterConfig/CompanyInfo">@Localizer["CompanyInfo"]</a>
+        <a class="navSectionLink" href="/AdminPage/FooterConfig/Contributors">@Localizer["Contributors"]</a>
+        <a class="navSectionLink" href="/AdminPage/FooterConfig/Newsletter">@Localizer["Newsletter"]</a>
+    </div>
+    <div class="all_section">
+        <div class="menu">
+            <div class="menu-header">
+                <span class="first-column">@Localizer["FooterMenuNames"]</span>
+                <span class="second-column">@Localizer["Visibility"]</span>
+                @{
+                    if (@ViewData["SectionName"].ToString() != "Newsletter")
+                    {
+                        <span class="third-column">@Localizer["Actions"]</span>
+                    }
+                }
+            </div>
+
+            @{ foreach (var page_item in Model)
+                {
+                    string row_id = Guid.NewGuid().ToString();
+
+                    <div class="menu-page">
+                        <a asp-action="FooterConfig" asp-route-id=@page_item.Id asp-route-section=@page_item.Section class="page-name">@page_item.Name</a>
+                        <!--<span class="page-name">Show</span>-->
+                        <div class="switch-area">
+                            <div class="switch_and_text">
+                                @{
+                                    string r = Guid.NewGuid().ToString();
+                                }
+                                @{ if (page_item.Visible == true)
+                                    {
+
+                                        <label class="switch">
+                                            <input type="checkbox" checked onclick="changePageVisibility('@page_item.Id', 'uncheck', '@r')" />
+                                            <div class="slider round"></div>
+                                        </label>
+                                        <p class="text" id="@r"> @Localizer["Show"] </p>
+                                    }
+                                    else
+                                    {
+                                        <label class="switch">
+                                            <input type="checkbox" onclick="changePageVisibility('@page_item.Id', 'check', '@r')" />
+                                            <div class="slider round"></div>
+                                        </label>
+                                        <p class="text" id="@r"> @Localizer["Hide"] </p>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        @{
+                            if (page_item.Name != "About Sports Hub" && page_item.Name != "Contact Us" && page_item.Name != "Sign up to receive the latest sports news")
+                            {
+                                <div class="delete-button-area">
+                                    <button class="delete_button" onclick="deletePage('@page_item.Id', '@row_id', '@page_item.Section')"><img class="delete" src="~/imagesAdminPage/Group.svg" /></button>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            }
+        </div>
+
+        <div class="show-section">
+            <p>@Localizer["ShowSection"]</p>
+            <label class="switch">
+                @{ if (ViewBag.Section.Visible)
+                    {
+                        <input type="checkbox" checked onclick="disableSection('@ViewBag.Section.SectionName', false)" />
+                    }
+                    else
+                    {
+                        <input type="checkbox" onclick="disableSection('@ViewBag.Section.SectionName', true)" />
+                    }
+                }
+                <div class="slider round"></div>
+            </label>
+        </div>
+
+        @{
+            if (@ViewData["SectionName"].ToString() == "CompanyInfo")
+            {
+                <div class="menu">
+                    <div class="menu-header">
+                        <span class="first-column">@Localizer["PrivacyAndTerms"]</span>
+                    </div>
+
+                    <div class="menu-page">
+                        <a asp-action="FooterConfig" asp-route-id=@ViewBag.PrivacyPolicy.Id class="page-name">@ViewBag.PrivacyPolicy.Name</a>
+                    </div>
+                    <div class="menu-page">
+                        <a asp-action="FooterConfig" asp-route-id=@ViewBag.Terms.Id class="page-name">@ViewBag.Terms.Name</a>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</body>
+<script>
+
+    if ("@ViewData["SectionName"].ToString()" == "Newsletter") {
+        document.getElementsByClassName("page-name")[0].href = "";
+        document.getElementsByClassName("page-name")[0].style.pointerEvents = "none";
+    }
+
+    window.addEventListener("load", function (event) {
+        var navHeaderLinks = document.getElementsByClassName('navSectionLink');
+        for (let i = 0; i < navHeaderLinks.length; i++) {
+            var navHeaderLink = navHeaderLinks[i];
+            var arrayOfStrings = navHeaderLink.textContent.split(' ');
+            var section = arrayOfStrings.join('');
+            if (section.toUpperCase() == "@ViewData["SectionName"]".toUpperCase()) {
+
+                navHeaderLink.style.color = "#d72130";
+                navHeaderLink.style.textDecoration = "underline";
+            }
+        }
+    });
+
+        function changePageVisibility(intValue, strValue, htmlid) {
+            let x = 1;
+             $.ajax({
+                    url: '@Url.Action("VisibleGet","AdminPage")',
+                    type: "GET",
+                    async: false,
+                    data: { id: intValue},
+                    success: function (res) {
+                        x = res;
+                    }
+             });
+            let text_s = document.getElementById(htmlid);
+            if (x === "yes") {
+                $.ajax({
+                    url: '@Url.Action("ChangePageVisibility", "AdminPage")',
+                    type: "POST",
+                    data: { id: intValue, vi: false },
+                    success: function () {
+                    }
+                });
+                text_s.innerText = @Localizer["Hide"];
+            } else {
+                $.ajax({
+                    url: '@Url.Action("ChangePageVisibility", "AdminPage")',
+                    type: "POST",
+                    data: { id: intValue, vi: true },
+                    success: function () {
+                    }
+                });
+                text_s.innerText = @Localizer["Show"];
+            }
+        }
+
+        function deletePage(intValue, htmlid, section1) {
+            $.ajax({
+                url: '@Url.Action("DeleteFooterPage","AdminPage")',
+                type: "DELETE",
+                data: { id: intValue, section: section1 },
+                success: function (res) {
+                    location.href = res;
+                }
+            });
+        }
+
+        function disableSection(section1, newStatus1) {
+            $.ajax({
+                url: '@Url.Action("ChangeSectionVisibility", "AdminPage")',
+                type: "POST",
+                data: { section: section1, newStatus: newStatus1 },
+                success: function (res) {
+                    location.href = res;
+                }
+            });
+        }
+
+        function openForm() {
+            document.getElementById("AddForm").style.display = "block";
+        }
+
+</script>

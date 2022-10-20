@@ -1,0 +1,92 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model sports_hub.Models.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = null;
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/Account/login-layout.css" />
+    <link rel="stylesheet" href="~/css/Account/password-reset.css" />
+    <link rel="stylesheet" href="~/css/HomeStyle.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    <header class="login_layout">
+        <button type="button" class="btn home" onclick="location.href='@Url.Action("Index", "Home")'">
+            Sports Hub
+        </button>
+
+        <div class="redirect">
+            <div class="dont_have_account" style=" margin: 10px;">
+                @Localizer["HaveAccount"]
+            </div>
+            <a class="get_started" href="/account/login">
+                @Localizer["LogIn"]
+            </a>
+        </div>
+    </header>
+    <main role="main" class="login_layout">
+        <div class="layout_container">
+            <div>
+                <img class="register_image" src="/images/Account/sing_up_in.png" />
+            </div>
+        </div>
+        <div class="container" style=" align-self: center;">
+            <div class="user_login_form">
+                <h2 class="form_title">@Localizer["Title"]</h2>
+
+                @{
+                    <form method="post" asp-action="ExternalLogins">
+                        <div>
+                            @if (Model != null)
+                            {
+                                @if (Model.ExternalLogins.Count != 0)
+                                {
+                                    @foreach (var provider in Model.ExternalLogins)
+                                    {
+                                        <button class="third-party-auth" name="provider" value="@provider.Name">
+                                            <img src=@String.Format("/images/Account/{0}-icon.svg", provider.Name.ToLower()) />
+                                        </button>
+                                    }
+                                }
+                            }
+                        </div>
+                    </form>
+                }
+
+                <form method="post">
+                    <h4 class="form_sub_title">@Localizer["SubTitle"]</h4>
+
+                    <div asp-validation-summary="ModelOnly"></div>
+
+
+                    <div class="row_with_two_columns">
+                        <div class="one_column">
+                            <label asp-for="FirstName" class="cred_label">@Localizer["FirstName"]</label>
+                            <input asp-for="FirstName" class="cred_small_input" placeholder="John" />
+                        </div>
+                        <div class="one_column">
+                            <label asp-for="LastName" class="cred_label">@Localizer["LastName"]</label>
+                            <input asp-for="LastName" class="cred_small_input" placeholder="Doe" />
+                        </div>
+                    </div>
+                    <div>
+                        <label asp-for="Email" class="cred_label">@Localizer["EmailAddress"]</label>
+                        <input asp-for="Email" class="cred_input" placeholder="jonhdoe@gmail.com" />
+                    </div>
+                    <div>
+                        <label asp-for="Password" class="cred_label">@Localizer["Password"]</label>
+                        <input asp-for="Password" class="cred_input" placeholder="8+ characters (letters and numbers)" />
+                    </div>
+                    <div>
+                        <button type="submit" class="submit_button">@Localizer["SignUpButton"]</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>

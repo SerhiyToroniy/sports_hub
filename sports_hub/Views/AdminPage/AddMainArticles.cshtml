@@ -1,0 +1,489 @@
+﻿@using sports_hub.Models.Entities.Navigation
+@using sports_hub.Services.Implementations.AdminPage
+@model dynamic
+
+@{ Layout = "/Views/AdminPage/_Layout.cshtml";
+    ViewData["Title"] = "Home";}
+
+@section sectionInteractButtons {
+    <a id="cancel" asp-action="AddMainArticles" asp-controller="AdminPage"><span class="buttonCancel" onclick="callCancelAttentionWindow(true)">Cancel</span></a>
+    <a><button class="buttonSmaller" id="save_publish" onclick="save()" ; style="background: #D72130; width:134px; cursor: default;">Save all changes</button></a>
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/AdminPage/interactButtonsSection.css" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/AdminPage/add_articles_to_main.css" />
+    @*<script language="JavaScript" type="text/javascript" src="~/js/AddMainBreakdown.js"></script>*@
+    <!-- Latest compiled and minified JavaScript -->
+
+</head>
+<style>
+    div[disabled=disabled] {
+        pointer-events: none;
+        opacity: 1;
+    }
+
+    .flash-message {
+        display: none;
+        position: absolute;
+        padding-left: 19px;
+        padding-top: 17px;
+        width: 472px;
+        height: 85px;
+        left: 940px;
+        top: 114px;
+        background: #FFFFFF;
+        box-shadow: 0px 4px 28px #818181;
+    }
+
+    .content-flash-message {
+        display: flex;
+        flex-direction: row;
+        column-gap: 13px;
+    }
+
+    .content-flash-text-area {
+        display: flex;
+        flex-direction: column;
+        grid-row-gap: 4px;
+        text-align: left;
+        font-family: Open Sans;
+        font-style: normal;
+        font-size: 14px;
+        line-height: 19px;
+        color: #000000;
+    }
+    .flash-btn {
+        border: none;
+        outline: none;
+        background-color: transparent;
+    }
+
+    *:focus {
+        outline: 0 !important;
+    }
+</style>
+<body>
+    <div class="all" disabled="">
+        <div class="main-articles" id="1">
+            <div class="form" data-rt="rrrr" style="padding-top: 37px;">
+                <div class="section-headline" style="padding-bottom: 37px;">
+                    <hr>
+                    <div class="headline-circle">MAIN ARTICLES</div>
+                    <hr>
+                </div>
+            </div>
+            <button id="add-main" class="add-button" onclick='add_article("main-articles", "NBA", "Not selected", "Not selected", "Not selected", true, false)'>+ Add one more article</button>
+        </div>
+        <div class="breakdown-articles">
+            <div class="form" data-rt="rrrr" style="padding-top: 37px;">
+                <div class="section-headline" style="padding-bottom: 37px;">
+                    <hr>
+                    <div class="headline-circle">BREAKDOWN</div>
+                    <hr>
+                </div>
+            </div>
+            <button id="add-breakdown" class="add-button" onclick='add_article("breakdown-articles", "NBA", "Not selected", "Not selected", "Not selected", false)'>+ Add one more article</button>
+        </div>
+
+    </div>
+    <div class="flash-message" id="flash-published" link="">
+        <div class="content-flash-message">
+            <img src="~/imagesAdminPage/Group 93.svg" />
+            <div class="content-flash-text-area">
+                <span style="font-weight: bold">Published!</span>
+                <span>The Home page is successfully published.</span>
+            </div>
+            <button class="flash-btn" style="padding-left: 80px" onclick="closeFlash()"><img src="~/imagesAdminPage/Combined Shape.svg"/></button>
+        </div>
+    </div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script>
+    var current_main_articles_count = '';
+    let max_main_articles_count = 5;
+    var savedMainArticles = JSON.parse('@Html.Raw(Json.Serialize(ViewBag.SavedMainArticles))');
+    var publishedMainArticles = JSON.parse('@Html.Raw(Json.Serialize(ViewBag.PublishedMainArticles))');
+    let min_main_articles_count = 1;
+    window.addEventListener("load", function (event) {
+        var publish_save_button = this.document.getElementById("save_publish");
+        var cancel_button = this.document.getElementById("cancel");
+        if (@ViewBag.SavedMainArticles.Count > 0) {
+            current_main_articles_count = @ViewBag.SavedMainArticles.Count;
+            var i;
+            for (i = 0; i < @ViewBag.SavedMainArticles.Count; i++) {
+                add_article("main-articles", savedMainArticles[i].team.conference.category.name, savedMainArticles[i].team.conference.name, savedMainArticles[i].team.name, savedMainArticles[i].headline, savedMainArticles[i].showOnMainPage, true);
+            }
+            publish_save_button.innerText = "Publish";
+            publish_save_button.onclick = publish;
+            cancel_button.style.visibility = "hidden";
+            var all_elements = this.document.getElementsByClassName("all")[0];
+            all_elements.setAttribute("disabled", "disabled");
+        }
+        else if (@ViewBag.PublishedMainArticles.Count > 0) {
+            current_main_articles_count = @ViewBag.PublishedMainArticles.Count;
+            var i;
+            for (i = 0; i < @ViewBag.PublishedMainArticles.Count; i++) {
+                add_article("main-articles", publishedMainArticles[i].team.conference.category.name, publishedMainArticles[i].team.conference.name, publishedMainArticles[i].team.name, publishedMainArticles[i].headline, publishedMainArticles[i].showOnMainPage, true);
+            }
+            publish_save_button.innerText = "Save all changes";
+            publish_save_button.onclick = save;
+            cancel_button.style.visibility = "visible";
+        }
+        else {
+            add_article("main-articles", "NBA", "Not selected", "Not selected", "Not selected", true, true);
+            publish_save_button.innerText = "Save all changes";
+            publish_save_button.onclick = save;
+            cancel_button.style.visibility = "visible";
+        }
+    });
+
+    function add_article(section, category, conference, team, article, show_in_section, is_default_adding) {
+        // Create element; can be whatever you want, e. g. div, h1, p, img...
+        var form_div = document.createElement('div');
+
+        form_div.className = "form";
+        let show_text = '';
+        let add_button_name = '';
+        let show = '';
+        if (section == "main-articles") {
+            show_text = "Show on the main page";
+            add_button_name = "add-main";
+        }
+        else {
+            show_text = "Show on the breakdown";
+            add_button_name = "add-breakdown";
+        }
+        if (show_in_section) {
+            show = "checked";
+        }
+        var id = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+        form_div.innerHTML = `
+                            <div class="form" id="${id}" data-rt="rrrr" style="padding-top: 37px;">
+                            <div class='menu'>
+                                <div class="article-info">
+                                    <div class="box-headline">
+                                        <span>Category*</span>
+                                        <select name="Conference" id="category${id}" onclick='load_categories("category${id}"); this.onclick=null;' onchange='fix_change_category("${id}")'>
+                                            <option disabled selected hidden value="">${category}</option>
+                                        </select>
+                                    </div>
+                                    <div class="box-headline">
+                                        <span>Conference</span>
+                                        <select name="Conference" id="conference${id}" onchange='fix_change_conf("${id}")'>
+                                            <option disabled selected hidden value=""> ${conference}</option>
+                                            @{
+                                                foreach(var c in ViewBag.ConfsNBA)
+                                                {
+                                                    <option>@c.Name</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="box-headline">
+                                        <span>Team</span>
+                                        <select name="Team" id="team${id}" onchange='fix_change_team("${id}")'>
+                                            <option disabled selected hidden value="">${team}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="box-headline">
+                                    <span>Article*</span>
+                                    <select name="Article" id="article${id}" style="width: 814px;">
+                                            <option disabled selected hidden value="">${article}</option>
+                                            @{ foreach (var a in ViewBag.DefaultArticles)
+                                                {
+                                                    <option>@a.Headline</option>
+                                                }
+                                            }
+                                        </select>
+                                </div>
+                                <div class="show-delete">
+                                    <delete-and-add>
+                                        <button class="delete-button" onclick='delete_func("${id}")'>Delete</button>
+
+                                    </delete-and-add>
+
+                                    <div class="show-text-toggle">
+                                        <span class="show-text">${show_text}</span>
+                                        <label class="switch">
+                                            <input class="switch-check-box" type="checkbox" ${show}/>
+                                            <div class="slider round"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>`;
+
+        let add_button = document.getElementById(add_button_name);
+        
+        if (current_main_articles_count < max_main_articles_count) {
+            add_button.style.visibility = "visible";
+            document.getElementsByClassName(section)[0].insertBefore(form_div, add_button);
+            if (is_default_adding == false) {
+                current_main_articles_count++;
+            }
+        }
+        if (current_main_articles_count >= max_main_articles_count) {
+            add_button.style.visibility = "hidden";
+        }
+    }
+
+    function fix_change_category(select_id) {
+        var conference_id = "#" + "conference" + select_id;
+        var team_id = "#" + "team" + select_id;
+        var article_id = "#" + "article" + select_id;
+
+        $(conference_id).empty();
+        $(team_id).empty();
+        $(article_id).empty();
+
+        $(team_id).append("<option>" + "Not selected" + "</option>");
+        $(conference_id).append("<option>" + "Not selected" + "</option>");
+        $(article_id).append("<option>" + "Not selected" + "</option>");
+
+        load_conferences(select_id);
+        load_articles(select_id);
+    }
+
+    function fix_change_conf(select_id) {
+        var team_id = "#" + "team" + select_id;
+        var article_id = "#" + "article" + select_id;
+        $(team_id).empty();
+        $(article_id).empty();
+
+        $(team_id).append("<option>" + "Not selected" + "</option>");
+        $(article_id).append("<option>" + "Not selected" + "</option>");
+
+        load_teams(select_id);
+        load_articles(select_id);
+    }
+
+    function fix_change_team(select_id) {
+        var article_id = "#" + "article" + select_id;
+        $(article_id).empty();
+
+        $(article_id).append("<option>" + "Not selected" + "</option>");
+
+        load_articles(select_id);
+    }
+
+    function delete_func(param) {
+        var article_to_delete = document.getElementById(param);
+        if (current_main_articles_count > min_main_articles_count) {
+            article_to_delete.parentNode.removeChild(article_to_delete);
+            current_main_articles_count--;
+        }
+        if (current_main_articles_count < max_main_articles_count) {
+            let add_btn = document.getElementById("add-main");
+            add_btn.style.visibility = "visible";
+        }
+    }
+
+    function load_categories(select_id) {
+        let category_id = "#" + select_id;
+        $.ajax({
+            url: "/data/categories",
+            type: 'GET',
+            dataType: 'json',
+            data: {},
+            success: function (data) {
+                var list = data;
+                $.each(list, function (index, item) {
+                    $(category_id).append("<option>" + item.name + "</option>");
+                });
+            },
+            error: function (x, e) {
+            }
+        });
+    }
+
+    function load_conferences(select_id) {
+        let conference_id = "#" + "conference" + select_id;
+        let chosen_option = '';
+        var i;
+        let y = document.getElementsByClassName("box-headline");
+        for (i = 0; i < y.length; i++) {
+            let t = y[i].getElementsByTagName('select');
+            var j;
+            for (j = 0; j < t.length; j++) {
+                if (t[j].id == "category" + select_id) {
+                    var select1 = document.getElementById(t[j].id);
+                    chosen_option = select1.options[select1.selectedIndex].text;
+                    break;
+                }
+            }
+        }
+        $.ajax({
+            url: '@Url.Action("Conferences", "Data")',
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+                data: { CategoryName: chosen_option},
+            success: function (data) {
+                var list = data;
+                $.each(list, function (index, item) {
+                    $(conference_id).append("<option>" + item.name + "</option>");
+                });
+            },
+            error: function (x, e) {
+            }
+        });
+    }
+
+    function load_teams(select_id) {
+        let team_id = "#" + "team" + select_id;
+        let chosen_option = '';
+        var i;
+        let y = document.getElementsByClassName("box-headline");
+        for (i = 0; i < y.length; i++) {
+            let t = y[i].getElementsByTagName('select');
+            var j;
+            for (j = 0; j < t.length; j++) {
+                if (t[j].id == "conference" + select_id) {
+                    var select1 = document.getElementById(t[j].id);
+                    chosen_option = select1.options[select1.selectedIndex].text;
+                    break;
+                }
+            }
+        }
+        $.ajax({
+            url: '@Url.Action("Teams", "Data")',
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+                data: { ConferenceName: chosen_option},
+            success: function (data) {
+                var list = data;
+                $.each(list, function (index, item) {
+                    $(team_id).append("<option>" + item.name + "</option>");
+                });
+            },
+            error: function (x, e) {
+            }
+        });
+    }
+
+    function load_articles(select_id) {
+        let article_id = "#" + "article" + select_id;
+        let chosen_category = '';
+        let chosen_conference = '';
+        let chosen_team = '';
+        var i;
+        let y = document.getElementsByClassName("box-headline");
+        for (i = 0; i < y.length; i++) {
+            let t = y[i].getElementsByTagName('select');
+            var j;
+            for (j = 0; j < t.length; j++) {
+                if (t[j].id == "category" + select_id) {
+                    var select1 = document.getElementById(t[j].id);
+                    chosen_category = select1.options[select1.selectedIndex].text;
+                }
+                else if (t[j].id == "conference" + select_id) {
+                    var select1 = document.getElementById(t[j].id);
+                    chosen_conference = select1.options[select1.selectedIndex].text;
+                }
+                else if (t[j].id == "team" + select_id) {
+                    var select1 = document.getElementById(t[j].id);
+                    chosen_team = select1.options[select1.selectedIndex].text;
+                    break;
+                }
+            }
+        }
+        $.ajax({
+            url: '@Url.Action("Articles", "Data")',
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            data: { conference: chosen_conference, category: chosen_category, team: chosen_team },
+            success: function (data) {
+                var list = data;
+                $.each(list, function (index, item) {
+                    $(article_id).append("<option>" + item.headline + "</option>");
+                });
+            },
+            error: function (x, e) {
+            }
+        });
+    }
+
+    function save() {
+        saveArticles("main-articles");
+    }
+
+    function getData(section) {
+        var i, j = 0;
+        let main_article_section = document.getElementsByClassName(section);
+        let y = main_article_section[0].getElementsByClassName("box-headline");
+        let switches = document.getElementsByClassName("switch-check-box");
+        var articles = [];
+        var is_ok = true;
+        for (i = 0; i < y.length; i++) {
+            let t = y[i].getElementsByTagName('select');
+            if (t[0].id.includes("article")) {
+                var select1 = document.getElementById(t[0].id);
+                var article_title = select1.options[select1.selectedIndex].text
+                if (article_title != "Not selected") {
+                    articles.push({
+                        headline: article_title,
+                        status: switches[j].checked
+                    });
+                }
+                else {
+                    is_ok = false;
+                    select1.style.border = "1px solid #D72130";
+                }
+                j++;
+            }
+        }
+        return [articles, is_ok];
+    }
+
+    function saveArticles(section) {
+        var articles = getData(section);
+        var is_validated = articles[1];
+        if (is_validated) {
+            articles = JSON.stringify({ 'articles': articles[0], 'section': section });
+            $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                type: 'POST',
+                url: '@Url.Action("SaveArticlesMainBreakdown", "AdminPage")',
+                data: articles,
+                async: false,
+                success: function (res) {
+                    location.href = res;
+                },
+                failure: function (response) {
+                }
+            });
+        }
+    }
+
+    function publish() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PublishArticlesMainBreakdown", "AdminPage")',
+            data: {},
+            async: false,
+            success: function (res) {
+                let flash = document.getElementById("flash-published");
+                flash.style.display = "block";
+                flash.setAttribute("link", res);
+            },
+            failure: function (response) {
+            }
+        });
+    }
+
+    function closeFlash() {
+        let flash = document.getElementById("flash-published");
+        flash.style.display = "none";
+        location.href = flash.getAttribute("link");
+    }
+
+
+</script>

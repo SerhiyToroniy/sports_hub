@@ -1,0 +1,46 @@
+﻿@{ ViewData["Title"] = "TeamHub";
+    Layout = "_ProfileLayout"; }
+<head>
+    <script type="text/javascript" src='object.js'></script>
+    <meta charset="utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+</head>
+<body>
+    <div class="main-content">
+        <div class="headline"><div class="text">YOUR FOLLOWED TEAMS</div></div>
+        <div id="user-teams"class="list_of_teams">
+           
+        </div>
+        <div class="manage-team-headline"><a href="/Account/TeamHubManageTeams" class="text_manage_teams">Manage Teams List</a></div>
+    </div>
+
+</body>
+</html>
+
+<script>
+    var user = '@ViewBag.Username';
+    window.addEventListener("load", function (event) {
+        $.ajax({
+            url: '@Url.Action("GetUserTeams", "Data")',
+            type: 'GET',
+            dataType: 'json',
+            data: { username: user },
+            success: function (data) {
+                var list = data;
+                $.each(list, function (index, item) {
+                    var form_div = document.createElement('div');
+                    form_div.innerHTML = `<div class="block">
+                                            <img src="/images/Account/Oval Copy 6.svg" width="60px" height="60px" />
+                                            <div class="text-inside-block">
+                                                <span>${item.name}</span>
+                                                <span>fdfkdfdlkf</span>
+                                            </div>
+                                            </div>`;
+                    document.getElementById('user-teams').appendChild(form_div);
+                });
+            },
+            error: function (x, e) {
+            }
+        });
+    });
+</script>

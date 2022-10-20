@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Sports Hub</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/HomeStyle.css" />
+    <link rel="stylesheet" href="~/css/Account/login-layout.css" />
+</head>
+<body>
+    <header class="login_layout">
+        <button type="button" class="btn home" onclick="location.href='@Url.Action("Index", "Home")'">
+            Sports Hub
+        </button>
+
+        <div class="redirect">
+            <div class="dont_have_account">
+                @Localizer["NoAccount"]
+            </div>
+            <a class="get_started" href="/account/register">
+                @Localizer["GetStarted"]
+            </a>
+        </div>
+    </header>
+    <main role="main" class="login_layout">
+        <div class="layout_container">
+            <div>
+                <img class="register_image" src="/images/Account/sing_up_in.png" />
+            </div>
+        </div>
+        <div class="container" style=" align-self: center;">
+
+            @RenderBody()
+
+        </div>
+    </main>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+
+

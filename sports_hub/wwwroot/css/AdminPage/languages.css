@@ -1,0 +1,406 @@
+﻿@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+#buttonAddNewLanguage {
+    position: relative;
+    display: block;
+    top: 30%;
+    left: 30%;
+    font-size: 13px;
+    width: 134px;
+    height: 32px;
+    border: none;
+    color: white;
+    background-color: #d72130;
+    cursor: pointer;
+    z-index: 0;
+    outline: none;
+}
+
+#titleMainArticles {
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    border: solid;
+    border-width: 1px;
+    border-color: #e8e8e8;
+    border-radius: 20px;
+    position: absolute;
+    top: 35px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background-color: white;
+    width: 180px;
+    height: 42px;
+    line-height: 42px;
+}
+
+.show{
+    display: block;
+}
+
+#backgroundPanel {
+    background-color: black;
+    width: 500px;
+    height: 200px;
+    display: none;
+}
+
+.show-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 18px;
+}
+
+#cancelAttention {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 2;
+    display: none;
+}
+
+.cancelAttentionWindow {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    height: 50%;
+    background-color: white;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 15px 2px rgba(255, 255, 255, 0.7);
+}
+
+.cancelAttentionIcon {
+    position: fixed;
+    transform: translate(-50%, -50%);
+    top: 0;
+    left: 50%;
+}
+
+.cancelAttentionWindowCircle {
+    position: fixed;
+    top: 2px;
+    left: 50%;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #d72130;
+    transform: translate(-50%, -50%);
+}
+
+.cancelAttentionWindowTextContainer {
+    margin-top: 5%;
+}
+
+.cancelAttentionWindowText {
+    font-family: Roboto;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 12px;
+    letter-spacing: 0.9px;
+    display: block;
+    user-select: none;
+    text-transform: uppercase;
+    color: #7F8899;
+    text-align: left;
+    
+}
+
+.cancelAttentionWindowButtonsContainer {
+    user-select: none;
+    position: absolute;
+    bottom: 0;
+    height: 70px;
+    width: 100%;
+    border-top: solid;
+    border-color: #f4f5f8;
+    border-width: 2px;
+}
+
+.cancelAttentionWindowButtonYes {
+    position: absolute;
+    top: 50%;
+    right: -5%;
+    color: white;
+    width: 107px;
+    height: 32px;
+    background-color: #d72130;
+    border: none;
+    transform: translate(-50%, -50%);
+}
+
+.cancelAttentionWindowButtonNo {
+    cursor: pointer;
+    position: absolute;
+    color: #d72130;
+    top: 50%;
+    right: 25%;
+    transform: translate(-50%, -50%);
+}
+
+#titleAddNewLanguageWindow {
+    color: #000000;
+    text-align: center;
+    font-size: 24px;
+    line-height: 33px;
+}
+
+#languageContainer {
+    margin: 5% 10% 0px 10%;
+    text-align: center;
+}
+
+.dropdown-item {
+    font-family: Open Sans;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: left;
+    padding-right: 20%;
+    width: 200%;
+}
+
+#navbarDropdown {
+    border: solid;
+    border-color: black;
+    border-width: 1px;
+    font-family: Open Sans;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 16px;
+    letter-spacing: 0px;
+    text-align: left;
+}
+
+.dropdown-menu.show {
+    display: block;
+    padding-right: 56%;
+    width: 80%;
+}
+
+.languageLabel{
+    width: 100%;
+}
+
+.languageCheckbox{
+    margin-left: 25%;
+}
+
+.delete_button {
+    border: none;
+    background-color: transparent;
+    text-align: center;
+}
+
+.delete {
+    width: 13px;
+    height: 15.75px;
+}
+
+.first_column{
+    padding-left: 6%;
+}
+.second_column {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 15%;
+}
+
+label{
+    margin: 0px;
+}
+
+.tableBody {
+    font-family: Open Sans;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    letter-spacing: 0px;
+    text-align: left;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #FFFFFF;
+    border: 1px solid #D4D9E2;
+    box-sizing: border-box;
+    border-radius: 50px;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        width: 8px;
+        height: 8px;
+        left: 2px;
+        bottom: 2px;
+        background-color: #D4D9E2;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+input:checked + .slider {
+    background-color: white;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    background-color: #C80515;
+    -webkit-transform: translateX(12px);
+    -ms-transform: translateX(12px);
+    transform: translateX(12px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+
+.switch-area {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    left: 370px;
+}
+
+.text {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 18px;
+    padding-top: 5px;
+    font-family: Open Sans;
+}
+
+.switch_and_text {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 4px;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 26px;
+    height: 14px;
+}
+
+    .switch input {
+        display: none;
+    }
+
+
+.all_section {
+    position: absolute;
+    left: 207px;
+    top: 304px;
+}
+
+.menu {
+    padding-bottom: 76px;
+}
+
+.menu-header {
+    width: 602px;
+    height: 48px;
+    background: #F2F2F2;
+    padding-top: 15px;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 16px;
+    text-transform: uppercase;
+    color: #434C5D;
+    font-family: Open Sans;
+}
+
+.first-column {
+    padding-left: 35px;
+}
+
+.second-column {
+    padding-left: 270px;
+}
+
+.third-column {
+    padding-left: 51px;
+}
+
+.menu-page {
+    width: 603px;
+    height: 55px;
+    padding: 15px 35px 0px 35px;
+    background: white;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border: 1px solid #D4D9E2;
+}
+
+    .menu-page:hover {
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        text-decoration: none;
+    }
+
+
+.delete_button {
+    border: none;
+    background-color: transparent;
+}
+
+.delete {
+    width: 13px;
+    height: 15.75px;
+}
+
+.delete-button-area {
+    padding: 0px 35px 15px 35px;
+}
+
+.page-name {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 18px;
+    color: #2B2F43;
+    text-decoration: none;
+    font-family: Open Sans;
+}
+
+    .page-name:hover {
+        text-decoration: none;
+    }
+
+p {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#English, #Ukrainian {
+    margin-left: 75%;
+}

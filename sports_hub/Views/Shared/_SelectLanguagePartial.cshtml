@@ -1,0 +1,26 @@
+﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Microsoft.Extensions.Options
+
+@model IEnumerable<sports_hub.Models.Entities.Language>
+@inject IViewLocalizer Localizer
+@inject IOptions<RequestLocalizationOptions> LocOptions
+
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var list = from m in Model where m.Visible == true select m;
+    var cultureItems = list.Select(c => new SelectListItem { Value = c.Name.Substring(0,2), Text = c.Name.Substring(0,2), Selected = (c.Visible=true) }).ToList();
+            }
+
+<head>
+    <link rel="stylesheet" href="~/css/change-languages.css" />
+</head>
+
+<body>
+    <form asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path" method="post">
+        <select name="culture" onchange="this.form.submit();"
+                asp-for="@requestCulture.RequestCulture.UICulture.Name"
+                asp-items="cultureItems"></select>
+    </form>
+</body>

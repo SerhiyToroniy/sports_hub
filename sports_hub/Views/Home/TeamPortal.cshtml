@@ -1,0 +1,170 @@
+﻿@{
+    if (ViewBag.Team == null)
+    {
+        ViewData["Title"] = ViewBag.Category + " Page";
+    }
+    else
+    {
+        ViewData["Title"] = ViewBag.Team + " Page";
+    }
+}
+
+
+<div style="display:grid; grid-template-columns:1fr 300px;">
+    <div class="main">
+        <div>
+            @{
+                if (ViewBag.Team == null)
+                {
+                    <div class="news-type vertical">@ViewBag.Category</div>
+                }
+                else
+                {
+                    <div class="news-type vertical">@ViewBag.Team</div>
+                    <div>@ViewBag.Category > @ViewBag.Conf > @ViewBag.Team</div>
+                }
+            }
+            @{if (ViewBag.Articles.Count > 0) { 
+                    <div>
+                        @{string image = Convert.ToBase64String(ViewBag.Articles[0].Image); }
+                        <img class="news-picture" src="data:image/png; base64, @image" alt="@ViewBag.Articles[0].Alt_picture_text" />
+                        <div class="news-info-box">
+                            <p class="news-publish-date">Published / @ViewBag.Articles[0].DateTime</p>
+                            <p class="news-name">@ViewBag.Articles[0].Headline</p>
+                            <p class="news-info">@ViewBag.Articles[0].Caption</p>
+                            <button type="button" class="btn news-more" onclick="location.href=/Article/GetArticle?id=@ViewBag.Articles[0].Id">More</button>
+                        </div>
+                    </div>
+                    for (int i = 1; i <= ViewBag.AditionalArticleCount; ++i)
+                        {
+                            if (ViewBag.Articles.Count > i && ViewBag.Articles[i] != null)
+                            {
+                                image = Convert.ToBase64String(ViewBag.Articles[i].Image);
+                                <hr style="margin-top:20px;" />
+                                <div class="breakdown-small team-portal" onclick="location.href='/Article/GetArticle?id=@ViewBag.Articles[i].Id';">
+                                    <img class="news-picture" src="data:image/png; base64, @image" alt="@ViewBag.Articles[i].Alt_picture_text" style="height: 200px;" />
+                                    <div>
+                                        <p class="mini-news-name">@ViewBag.Articles[i].Caption</p>
+                                        <p class="mini-news-info">@ViewBag.Articles[i].DisplayedContent</p>
+                                    </div>
+                                </div>
+                                }
+                            }
+
+                     }
+                     else
+                     {
+                        <p class="news-name" style="font-size:48px;">Sorry</p>
+                        <h1 style="margin-left:33px;">There are no articles in this section now</h1>    
+                     }
+              }
+            
+
+
+
+            <div class="most-popular-commented" style="margin-top: 20px; margin-bottom: 20px;">
+                <div>
+                    <div style="display:flex">
+                        <nobr><p class="most-text">MOST POPULAR</p></nobr>
+                        <div class="most-line"></div>
+                    </div>
+
+                    <div class="breakdown-small">
+                        <img class="news-picture" src="https://img.championat.com/c/1350x759/news/big/p/y/kogda-nuzhno-otdavat-rebjonka-v-sport-rekomendacii_1574181249956324555.jpg" />
+                        <div>
+                            <p class="mini-news-name">Lorem ipsum</p>
+                            <p class="mini-news-info">Lorem ipsum dolor sit amet, consectetur</p>
+                        </div>
+                        <img class="svg" src="~/images/Arrow.svg" />
+                    </div>
+
+                    <div class="breakdown-small">
+                        <img class="news-picture" src="https://img.championat.com/c/1350x759/news/big/p/y/kogda-nuzhno-otdavat-rebjonka-v-sport-rekomendacii_1574181249956324555.jpg" />
+                        <div>
+                            <p class="mini-news-name">Lorem ipsum</p>
+                            <p class="mini-news-info">Lorem ipsum dolor sit amet, consectetur</p>
+                        </div>
+                        <img class="svg" src="~/images/Arrow.svg" />
+                    </div>
+
+                    <div class="breakdown-small">
+                        <img class="news-picture" src="https://img.championat.com/c/1350x759/news/big/p/y/kogda-nuzhno-otdavat-rebjonka-v-sport-rekomendacii_1574181249956324555.jpg" />
+                        <div>
+                            <p class="mini-news-name">Lorem ipsum</p>
+                            <p class="mini-news-info">Lorem ipsum dolor sit amet, consectetur</p>
+                        </div>
+                        <img class="svg" src="~/images/Arrow.svg" />
+                    </div>
+
+                </div>
+
+                <div>
+                    <div style="display:flex">
+                        <nobr><p class="most-text">MOST COMMENTED</p></nobr>
+                        <div class="most-line"></div>
+                    </div>
+
+                    <div class="breakdown-small">
+                        <img class="news-picture" src="https://img.championat.com/c/1350x759/news/big/p/y/kogda-nuzhno-otdavat-rebjonka-v-sport-rekomendacii_1574181249956324555.jpg" />
+                        <div>
+                            <p class="mini-news-name">Lorem ipsum</p>
+                            <p class="mini-news-info">Lorem ipsum dolor sit amet, consectetur</p>
+                        </div>
+                        <img class="svg" src="~/images/Arrow.svg" />
+                    </div>
+
+                    <div class="breakdown-small">
+                        <img class="news-picture" src="https://img.championat.com/c/1350x759/news/big/p/y/kogda-nuzhno-otdavat-rebjonka-v-sport-rekomendacii_1574181249956324555.jpg" />
+                        <div>
+                            <p class="mini-news-name">Lorem ipsum</p>
+                            <p class="mini-news-info">Lorem ipsum dolor sit amet, consectetur</p>
+                        </div>
+                        <img class="svg" src="~/images/Arrow.svg" />
+                    </div>
+
+                    <div class="breakdown-small">
+                        <img class="news-picture" src="https://img.championat.com/c/1350x759/news/big/p/y/kogda-nuzhno-otdavat-rebjonka-v-sport-rekomendacii_1574181249956324555.jpg" />
+                        <div>
+                            <p class="mini-news-name">Lorem ipsum</p>
+                            <p class="mini-news-info">Lorem ipsum dolor sit amet, consectetur</p>
+                        </div>
+                        <img class="svg" src="~/images/Arrow.svg" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="rightbar">
+        <div class="mini-news-swichers">
+            <p class="news-text-switchers vertical" style="margin-top: 50px;">NEWS</p>
+        </div>
+        <div class="banner facebook" style="margin-top: 350px;">
+            <div class="title">FACEBOOK VIDEO</div>
+            <img src="http://www.championsleague.basketball/images.fiba.com/Graphic/2/E/7/6/4h6KTvoZ3Ued-MfGtyOBZw.jpg?v=20190930220233461" style="width:100%" />
+            <p class="info">Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+            <div>
+                <p style="color: #B2B2B2;">Like us on Facebook</p>
+                <img src="~/images/Like.svg" class="like" />
+                <img src="~/images/LikeRectangle.svg" class="like-rectangle"/>
+                <p class="like-text">Like</p>
+            </div>
+        </div>
+        <div class="banner">
+            <div class="title">DEALBOOK</div>
+            <img src="http://www.championsleague.basketball/images.fiba.com/Graphic/2/E/7/6/4h6KTvoZ3Ued-MfGtyOBZw.jpg?v=20190930220233461" style="width:100%" />
+            <p class="info">Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+        </div>
+        <div class="banner facebook" style=" margin-top: 80px;">
+            <div class="title">FACEBOOK POST</div>
+            <img src="http://www.championsleague.basketball/images.fiba.com/Graphic/2/E/7/6/4h6KTvoZ3Ued-MfGtyOBZw.jpg?v=20190930220233461" style="width:100%" />
+            <p class="info">Lorem ipsum dolor sit amet, consectetur adipiscing</p>
+            <div>
+                <p style="color: #B2B2B2;">Like us on Facebook</p>
+                <img src="~/images/Like.svg" class="like" />
+                <img src="~/images/LikeRectangle.svg" class="like-rectangle" />
+                <p class="like-text">Like</p>
+            </div>
+        </div>
+    </div>
+</div>

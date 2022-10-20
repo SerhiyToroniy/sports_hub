@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" overflow="visible">
+  <g fill="none" stroke="gray" stroke-width="2">
+    <path stroke-dasharray="3.5,1.5" d="M 0,0 v500" />
+  </g>
+</svg>

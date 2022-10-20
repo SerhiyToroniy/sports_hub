@@ -1,0 +1,60 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
+@model sports_hub.Models.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    Layout = "_LoginLayout";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/Account/password-reset.css" />
+    <title>@ViewData["Title"]</title>
+</head>
+
+
+<div class="user_login_form">
+
+    <h2 class="form_title">@Localizer["LogInTitle"]</h2>
+    @{
+        <form method="post" asp-action="ExternalLogins">
+            <div>
+                @if (Model != null)
+                {
+                    @if (Model.ExternalLogins.Count != 0)
+                    {
+                        @foreach (var provider in Model.ExternalLogins)
+                        {
+                            <button class="third-party-auth" name="provider" value="@provider.Name">
+                                <img src=@String.Format("/images/Account/{0}-icon.svg", provider.Name.ToLower()) />
+                            </button>
+                        }
+                    }
+                }
+            </div>
+        </form>
+    }
+
+    <form method="post">
+        @if (ViewData.ContainsKey("Message"))
+        {
+            <p class="messages">@ViewData["Message"]</p>
+        }
+
+        <div asp-validation-summary="All" class="input_error"></div>
+        <div>
+            <label asp-for="Email" class="cred_label">@Localizer["EmailAddress"]</label>
+            <input asp-for="Email" class="cred_input" placeholder="Email@gmail.com" />
+        </div>
+        <div>
+            <div class="double_container">
+                <label asp-for="Password" class="cred_label">@Localizer["Password"]</label>
+                <a href="/account/ForgotPassword" class="forgot_password">@Localizer["ForgotPassword"]</a>
+            </div>
+            <input asp-for="Password" class="cred_input" placeholder="6+ characters" />
+        </div>
+        <div>
+            <button type="submit" class="submit_button">@Localizer["LogInButton"]</button>
+        </div>
+    </form>
+
+</div>

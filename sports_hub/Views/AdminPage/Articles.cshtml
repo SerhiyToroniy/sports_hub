@@ -1,0 +1,414 @@
+﻿@using sports_hub.Models.Entities.Navigation
+@using sports_hub.Services.Implementations.AdminPage
+@model dynamic
+@{ Layout = "/Views/AdminPage/_Layout.cshtml";
+                ViewData["Title"] = "NBA"; }
+
+@section sectionInteractButtons {
+    <a asp-area="" asp-controller="AdminPage" asp-action="AddNewArticle" asp-route-category="@ViewData["Title"]" style="text-decoration: none;">
+        <button class="buttonBigger">+ New Article</button>
+    </a>
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/AdminPage/articles_view.css" />
+    <link rel="stylesheet" href="~/css/AdminPage/interactButtonsSection.css" />
+</head>
+<body>
+    @{ int id_article = 0;}
+    <div class="all">
+        <div class="preview_search">
+            <div class="preview">
+                <img src="~/imagesAdminPage/ArticlesView/Vector.svg">
+                <span>Preview</span>
+            </div>
+            <div class="search-area">
+                <img src="~/imagesAdminPage/ArticlesView/Search.svg">
+                <input placeholder="Type here to search" id="search_input" class="search-input" onkeyup="Search(event)">
+            </div>
+        </div>
+
+        <div class="filters-area">
+            <div class="filter">
+                <div class="text-inside-filter">
+                    <span id="span-conf">All conferences</span>
+                    <button class="btn"><img src="~/imagesAdminPage/ArticlesView/Polygon.svg"></button>
+                </div>
+                <div id="dropdown-conf" class="dropdown-content">
+                    <a id="all-confs-a" onclick="changeConf('all-confs-a')" data-value="All conferences"> All conferences</a>
+                    @foreach (Conference conf in Model.Conferences)
+                    {
+                        if (conf.Category.Name == ViewBag.Category)
+                        {
+                            string conf_id = "conf" + Guid.NewGuid().ToString();
+        <a id=@conf_id onclick="changeConf('@conf_id')" data-value="@conf.Name"> @conf.Name</a>}
+                    }
+                </div>
+            </div>
+            <div class="filter">
+                <div class="text-inside-filter">
+                    <span id="span-team">All teams</span>
+                    <button class="btn"><img src="~/imagesAdminPage/ArticlesView/Polygon.svg"></button>
+                </div>
+                <div id="dropdown-team" class="dropdown-content">
+                    <a id="all-teams-a" onclick="changeConf('all-teams-a')" data-value="All teams"> All teams</a>
+                    @foreach (Team team in Model.Teams)
+                    {
+                        if (team.Conference.Category.Name == ViewBag.Category)
+                        {
+                            string team_id = "conf" + Guid.NewGuid().ToString();
+        <a id=@team_id onclick="changeTeam('@team_id')" data-value="@team.Name"> @team.Name</a>}
+                    }
+                </div>
+            </div>
+            <div class="filter">
+                <div class="text-inside-filter">
+                    <span id="span-status">All</span>
+                    <button class="btn"><img src="~/imagesAdminPage/ArticlesView/Polygon.svg"></button>
+                </div>
+                <div id="dropdown-status" class="dropdown-content">
+                    <a id="status-all" onclick="changeStatus('status-all', 'all')" data-value="All"> All </a>
+                    <a id="status-published" onclick="changeStatus('status-published', 'published')" data-value="Published"> Published </a>
+                    <a id="status-unpublished" onclick="changeStatus('status-unpublished', 'unpublished')" data-value="Unpublished"> Unpublished</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content" id="main-content-id">
+        </div>
+    </div>
+    <div id="cancelAttention" data-article-id="" data-category="">
+        <div class="cancelAttentionWindow">
+            <span class="cancelAttentionWindowCircle"></span>
+            <img class="cancelAttentionIcon" src="~/imagesAdminPage/ArticlesView/DeleteIcon.svg">
+            <div class="cancelAttentionWindowTextContainer">
+                <span class="cancelAttentionWindowText cancelAttentionWindowTextBold" style="padding-bottom: 20px;">You are about to delete an article</span>
+                <span class="cancelAttentionWindowText">This article will be deleted from Sports Hub! </span>
+                <span class="cancelAttentionWindowText">Are you sure?</span>
+            </div>
+            <div class="cancelAttentionWindowButtonsContainer">
+                <span class="cancelAttentionWindowButtonNo" onclick="callCancelAttentionWindow(false)"> Cancel</span>
+                <a><button class="cancelAttentionWindowButtonYes" onclick="Delete()">Delete</button></a>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+
+    var pageSize = @ViewBag.PageSize;
+    var pageNumber = @ViewBag.PageNumber;
+    var category = '@ViewBag.Category';
+    var conf = 'All conferences';
+    var team = 'All teams';
+    var status = 'all';
+    var search = '';
+    function showFunction(id_drop) {
+        document.getElementById(id_drop).classList.toggle("show");
+    }
+    window.addEventListener("load", function (event) {
+        loadArticles(category, conf, team, status, search, pageSize, pageNumber);
+    });
+
+    function openDropDown(event, id) {
+        var dropdowns = document.getElementsByClassName("option-drop-down");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+            if (dropdowns[i].id == id) {
+                dropdowns[i].style.display = dropdowns[i].style.display == "block" ? "none" : "block";
+            }
+            else {
+                dropdowns[i].style.display = "none";
+            }
+        }
+    }
+
+    function getArticleDiv(item) {
+        var published_status = item.published ? 'Unpublish' : 'Publish';
+        var id = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+        var s = `<div class="article">
+                <div class="options-and-content">
+                <div class="options" style="padding-left: 699px">
+                    <button class="option-btn" onclick='openDropDown(event, "${id}")'><img src="/imagesAdminPage/ArticlesView/Group.svg"></button>
+                    <div class="option-drop-down" id="${id}" style="position: relative;">
+                        <ul class="optionsUl" style="padding-top: 20px;">
+                            <li class="optionsli">
+                                @{
+                                    <a style="cursor: pointer" onclick="Update('@ViewBag.Category', '${item.id}', '${published_status}')">${published_status}</a>
+                                }
+                            </li>
+                            <li class="optionsli">
+                                <a style="cursor: pointer" onclick="openForm('@ViewBag.Category', '${item.id}')">Delete</a>
+                            </li>`;
+
+        if (item.published == false) {
+            s += `<li class="optionsli"> <a style="cursor: pointer" onclick="EditArticle('@ViewBag.Category', '${item.id}')">Edit</a> </li>`;
+        }
+
+        s += `<li class="optionsli">
+                <a>Move</a>
+                <ul class="optionsUl">
+                    @{
+                        foreach (Category c in Model.Categories)
+                        {
+                            <li class="optionsli">
+                                <a>@c.Name</a>
+                                <ul class="optionsUl">
+                                    @foreach (Conference conf in Model.Conferences)
+                                    {
+                                        if (conf.Category.Name == c.Name)
+                                        {
+                                            <li class="optionsli">
+                                                <a>@conf.Name</a>
+                                                <ul class="optionsUl">
+                                                    @foreach (Team team in Model.Teams)
+                                                    {
+                                                        if (team.Conference.Name == conf.Name)
+                                                        {
+                                                            <li class="optionsli"><a onclick="EditArticleInfo('${item.id}', '@team.Id')">@team.Name</a></li>
+                                                        }
+                                                    }
+                                                </ul>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    }
+                </ul>
+            </li>
+                </ul>
+            </div>
+        </div>`;
+        var image = getImage(item.id);
+        s += `<div class="text-and-photo">
+
+                 <div><img src="data:image/png; base64, ${image}" width="284px" height="158px"></div>
+                <div class="text-and-published">
+                <div class="text">
+                    <span class="headline">${item.headline}</span>
+                    <span class="content">${item.displayedContent}</span>
+                </div>
+                <div class="location-and-published">
+                    <span class="content">${item.team.conference.name} / ${item.location.name}</span>`;
+        if (item.published) {
+            s += `<div class="published">
+                <img src="/imagesAdminPage/ArticlesView/Ellipse.svg" />
+                <span>Published</span>
+            </div>`;
+        }
+        s += `</div> </div> </div> </div> </div>`
+        return s;
+    }
+
+    function loadArticles(category, conf, team, status, search, pageSize, pageNumber) {
+        var form_div = document.createElement('p');
+        form_div.id = "loading-text";
+        form_div.style.cssText = 'visibility: hidden; text-align: center; font-family: Open Sans; color: black;';
+        form_div.innerText = "loading...";
+        document.getElementsByClassName('main-content')[0].append(form_div);
+        $.ajax({
+            url: '@Url.Action("AllArticlesView", "Data")',
+            type: 'GET',
+            dataType: 'json',
+            beforeSend: function () {
+                $('#loading-text').css("visibility", "visible");
+            },
+            data: { category: category, conference: conf, team: team, status: status, search: search, page_size: pageSize, page_number: pageNumber },
+            success: function (data) {
+                var list = data;
+                var loading_element = document.getElementById("loading-text");
+                $.each(list, function (index, item) {
+                    var form_div = document.createElement('div');
+                    form_div.innerHTML = getArticleDiv(item);
+                    document.getElementsByClassName('main-content')[0].insertBefore(form_div, loading_element);
+                });
+            },
+            complete: function () {
+                $('#loading-text').css("visibility", "hidden");
+            },
+            error: function (x, e) {
+            }
+        });
+    }
+
+    function getImage(id) {
+        var result = "";
+        $.ajax({
+            url: "/data/GetImage",
+            type: 'GET',
+            data: { id: id },
+            async: false,
+            success: function (data) {
+                result = data;
+            }
+        });
+        return result;
+    }
+
+    document.addEventListener('scroll', function (event) {
+        if (event.target.id === 'main-content-id') {
+            let div = $("#main-content-id").get(0);
+            if (div.scrollTop + div.clientHeight >= div.scrollHeight) {
+                if (pageNumber + 1 <= pageSize) {
+                    pageNumber += 1;
+                    loadArticles(category, conf, team, status, search, pageSize, pageNumber);
+                }
+            }
+        }
+    }, true);
+
+    function openDropDown(event, id) {
+        var dropdowns = document.getElementsByClassName("option-drop-down");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+            if (dropdowns[i].id == id) {
+                dropdowns[i].style.display = dropdowns[i].style.display == "block" ? "none" : "block";
+            }
+            else {
+                dropdowns[i].style.display = "none";
+            }
+        }
+    }
+
+    function Update(article_category, article_id, newStatus) {
+        let st = '';
+        if (newStatus === "Publish") {
+            st = true;
+        }
+        else {
+            st = false;
+        }
+       $.ajax({
+            url: '@Url.Action("ChangePublishStatus", "AdminPage")',
+           type: "POST",
+           data: { category: article_category, id: article_id, newStatus: st },
+           success: function (res) {
+                location.href = res;
+            }
+       });
+    }
+
+    function Delete() {
+        let id_article = document.getElementById("cancelAttention").getAttribute("data-article-id");
+        let article_category = document.getElementById("cancelAttention").getAttribute("data-category");
+       $.ajax({
+            url: '@Url.Action("DeleteArticle", "AdminPage")',
+           type: "Delete",
+           data: { category: article_category, id: id_article},
+           success: function (res) {
+                location.href = res;
+            }
+       });
+    }
+
+    function changeConf(id) {
+        conf = document.getElementById(id).getAttribute('data-value');
+        team = 'All teams';
+        document.getElementById("span-conf").innerText = conf;
+        $("#dropdown-team").empty();
+        $.ajax({
+            url: '@Url.Action("Teams", "Data")',
+            type: 'GET',
+            dataType: 'json',
+            async: false,
+            data: { ConferenceName: conf},
+            success: function (data) {
+                var list = data;
+                $.each(list, function (index, item) {
+                    var team_id = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
+                    var a = document.createElement('a');
+                    a.id = team_id;
+                    a.onclick = () => { changeTeam(team_id); };
+                    a.setAttribute("data-value", item.name);
+                    a.innerHTML = item.name;
+                    $("#dropdown-team").append(a);
+                });
+            },
+            error: function (x, e) {
+            }
+        });
+        document.getElementById("span-team").innerText = "All teams";
+        pageNumber = 1;
+        $("#main-content-id").empty();
+        loadArticles(category, conf, team, status, search, pageSize, pageNumber);
+    }
+
+    function changeTeam(id) {
+        team = document.getElementById(id).getAttribute('data-value');
+        document.getElementById("span-team").innerText = team;
+        pageNumber = 1;
+        $("#main-content-id").empty();
+        loadArticles(category, conf, team, status, search, pageSize, pageNumber);
+    }
+
+    function changeStatus(id, status_arg) {
+        status = status_arg;
+        document.getElementById("span-status").innerText = document.getElementById(id).getAttribute('data-value');
+        pageNumber = 1;
+        $("#main-content-id").empty();
+        loadArticles(category, conf, team, status, search, pageSize, pageNumber);
+    }
+
+    function Search(e) {
+        if (e.keyCode == 13) {
+            search = document.getElementById('search_input').value;
+            pageNumber = 1;
+            $("#main-content-id").empty();
+            loadArticles(category, conf, team, status, search, pageSize, pageNumber);
+        }
+    }
+
+    function openForm(category, intVal) {
+        document.getElementById("cancelAttention").style.display = "block";
+        document.getElementById("cancelAttention").setAttribute("data-article-id", intVal);
+        document.getElementById("cancelAttention").setAttribute("data-category", category);
+    }
+
+    function showOptions() {
+        let a = document.getElementById("option-drop-down").style.visibility;
+        if (a === "visible") {
+            document.getElementById("option-drop-down").style.visibility = "hidden";
+        }
+        else {
+            document.getElementById("option-drop-down").style.visibility = "visible";
+        }
+    }
+
+    function callCancelAttentionWindow(show) {
+        cancelAttentionWindow = document.getElementById("cancelAttention");
+        if (show) {
+            cancelAttentionWindow.style.display = "block";
+        }
+        else {
+            cancelAttentionWindow.style.display = "none";
+        }
+    }
+
+    function EditArticleInfo(article_id, team_id) {
+        $.ajax({
+             url: '@Url.Action("EditArticleInfo", "AdminPage")',
+             type: "PUT",
+             data: { id: article_id, id_team: team_id },
+             success: function (res) {
+                location.href = res;
+            }
+       });
+    }
+
+    function EditArticle(category, article_id) {
+        $.ajax({
+             url: '@Url.Action("EditArticleGetUrl", "AdminPage")',
+            type: "PUT",
+            async: false,
+            data: { category: category, articleId: article_id },
+             success: function (res) {
+                location.href = res;
+            }
+       });
+    }
+
+</script>

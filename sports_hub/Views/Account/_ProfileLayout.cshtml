@@ -1,0 +1,40 @@
+﻿@{
+    Layout = "../Shared/_Layout";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/css/Account/password-changed.css" />
+    <link rel="stylesheet" href="~/css/Account/password-reset.css" />
+    <link rel="stylesheet" href="~/css/Account/manage-team.css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/HomeStyle.css" />
+    <link rel="stylesheet" href="~/css/Account/login-layout.css" />
+</head>
+<body>
+    <div class="content">
+        <div class="profile-tabs-control">
+            <div id="personal-tab" tabindex="1" class="profile-tab" ><a href="/Account/update" >Personal</a></div>
+            <div id="change-password-tab" tabindex="1" class="profile-tab" ><a href="/Account/ChangePassword" >Change password</a></div>
+            <div id="my-surveys-tab" tabindex="1" class="profile-tab" >My surveys</div>
+            <div id="team-hub-tab" tabindex="1" class="profile-tab" ><a href="/Account/TeamHubViewTeams">Team hub</a></div>
+            <div class="clear"></div>
+        </div>
+        
+        <script src="~/js/ProfileScript.js"></script>
+    </div>
+    <main role="main">
+        <div>
+            @RenderBody()
+        </div>
+    </main>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+
+
+

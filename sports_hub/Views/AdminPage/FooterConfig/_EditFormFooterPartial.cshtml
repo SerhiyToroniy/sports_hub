@@ -1,0 +1,120 @@
+﻿@model sports_hub.Models.Entities.FooterPage
+
+<style>
+    .required-field {
+        font-style: normal;
+        font-family: Open Sans;
+        font-weight: normal;
+        font-size: 10px;
+        line-height: 14px;
+        /* identical to box height */
+        color: #000000;
+        padding-left: 20px;
+        margin-top: 29px;
+    }
+
+    .required-and-buttons-area {
+        align-items: center;
+    }
+
+    #error-text1 {
+        padding-left: 23px;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 10px;
+        line-height: 14px;
+        /* identical to box height */
+        /* Main color */
+        color: #D72130;
+        visibility: hidden;
+    }
+
+    #error-text2 {
+        padding-left: 23px;
+        font-style: normal;
+        font-weight: 600;
+        font-size: 10px;
+        line-height: 14px;
+        /* identical to box height */
+        /* Main color */
+        color: #D72130;
+        visibility: hidden;
+    }
+</style>
+<head>
+    <script src="https://cdn.tiny.cloud/1/sxtb8cl1p12i1fc0xf4eece2gnkyo4u3bmhuy85wp27emc8m/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+<div class="edit-form" id="EditForm">
+    <form asp-action="Edit" id="edit-footer-partial">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <div class="edit-field">
+            <div class="edit-header">
+                <span> @ViewBag.Page.Name </span>
+            </div>
+
+            <div class="edit-attributes-area">
+                <div class="headline-area" id="name-box">
+                    <label asp-for="Name" class="headline">Headline</label>
+                    <input required asp-for="Name" value=@ViewBag.Page.Name class="input-headline" id="article_name">
+                </div>
+                <span id="error-text1">You should name page before adding!</span>
+                <div class="headline-area" id="content-box">
+                    <label asp-for="Content" class="headline">Content</label>
+                    <div style="z-index: 1;">
+                        <input required type="text" asp-for="Content" value=@ViewBag.Page.Content id="content">
+                    </div>
+                </div>
+                <span id="error-text2">You should add content!</span>
+                <script>
+                    tinymce.init({
+                        width: 496,
+                        height: 426,
+                        selector: 'input#content',  // change this value according to the HTML
+                        toolbar: 'undo redo | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | image',
+                        menubar: "none"
+                    });
+                </script>
+                <input asp-for="Section" value="@ViewData["SectionName"]" class="form-control" type="hidden" />
+                <input asp-for="Visible" value=@ViewBag.Page.Visible class="form-control" type="hidden" />
+                <div class="l">
+                    <span class="required-field" style="text-align:left">All fields are required*</span>
+                    <div class="edit-area-buttons">
+                        <button class="cancel-button" onclick="closeEditForm()">Cancel</button>
+                        <input style="caret-color: transparent; cursor: pointer;" value="Save" class="save-button" onclick="validate()" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    function closeEditForm() {
+        document.getElementById("EditForm").style.display = "none";
+    }
+
+    function validate() {
+        var contentValue = tinyMCE.activeEditor.getContent({
+            format: 'text'
+        });
+        var nameValue = document.getElementById("article_name").value;
+        var regExp = /[a-zA-Z]/g;
+
+        if (!regExp.test(contentValue) || nameValue == "") {
+            if (!regExp.test(contentValue)) {
+                var error_content_span = document.getElementById("error-text2");
+                error_content_span.style.visibility = "visible";
+                error_content_span.innerText = "You should add content!";
+            }
+            if (nameValue == "") {
+                var error_name_span = document.getElementById("error-text1");
+                error_name_span.style.visibility = "visible";
+                error_name_span.innerText = "You should name page before adding!";
+            }
+        }
+        else {
+            document.getElementById("edit-footer-partial").submit();
+        }
+    }
+</script>

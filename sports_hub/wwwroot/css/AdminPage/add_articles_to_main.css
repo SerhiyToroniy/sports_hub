@@ -1,0 +1,233 @@
+﻿.all {
+    display: flex;
+    flex-direction: column;
+    grid-row-gap: 88px;
+    left: 338.49px;
+    top: 258px;
+    position: absolute;
+}
+
+hr {
+    border: 1px solid #D4D9E2;
+    width: 320px;
+    height: 0px;
+}
+
+.section-headline {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.headline-circle {
+    background: #FFFFFF;
+    border: 1px solid #EDEDED;
+    box-sizing: border-box;
+    border-radius: 21px;
+    width: 177.56px;
+    height: 42px;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 19px;
+    /* identical to box height, or 136% */
+    padding-left: 35px;
+    padding-top: 12px;
+    color: #000000;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    grid-row-gap: 24px;
+}
+
+.article-info {
+    display: flex;
+    flex-direction: row;
+    column-gap: 38px;
+}
+
+.box-headline {
+    display: flex;
+    flex-direction: column;
+    grid-row-gap: 4px;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 10px;
+    line-height: 12px;
+    /* identical to box height */
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    /* Lable name */
+    color: #7F8899;
+}
+
+select {
+    width: 246px;
+    height: 36px;
+    padding: 5px 35px 5px 10px;
+    font-size: 16px;
+    border: 1px solid #CCC;
+    height: 34px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 19px;
+    outline: none;
+}
+
+.small-box {
+    width: 246px;
+    height: 36px;
+    background: #FFFFFF;
+    border: 1px solid #D4D9E2;
+    box-sizing: border-box;
+}
+
+.big-box {
+    background: #FFFFFF;
+    border: 1px solid #D4D9E2;
+    box-sizing: border-box;
+    width: 814px;
+    height: 36px;
+}
+
+.show-delete {
+    display: flex;
+    flex-direction: row;
+    column-gap: 605px;
+}
+
+.show-delete-add {
+    display: flex;
+    flex-direction: row;
+    column-gap: 441px;
+}
+
+.delete-button {
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    background-color: transparent;
+    line-height: 16px;
+    /* identical to box height */
+    border: none;
+    text-align: center;
+    color: #D72130;
+}
+
+.show-text-toggle {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+}
+
+.show-text {
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 16px;
+    /* identical to box height */
+    text-align: right;
+    color: #2B2F43;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 26px;
+    height: 14px;
+}
+
+    .switch input {
+        display: none;
+    }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #FFFFFF;
+    border: 1px solid #D4D9E2;
+    box-sizing: border-box;
+    border-radius: 50px;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        width: 8px;
+        height: 8px;
+        left: 2px;
+        bottom: 2px;
+        background-color: #D4D9E2;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+input:checked + .slider {
+    background-color: white;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    background-color: #C80515;
+    -webkit-transform: translateX(12px);
+    -ms-transform: translateX(12px);
+    transform: translateX(12px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+
+.add-button {
+    font-family: Open Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 17px;
+    /* identical to box height, or 142% */
+    text-align: center;
+    text-decoration-line: underline;
+    border: none;
+    background-color: transparent;
+    color: #D72130;
+}
+
+.delete-and-add {
+    display: flex;
+    flex-direction: row;
+    column-gap: 34px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.main-articles {
+    display: flex;
+    flex-direction: column;
+}

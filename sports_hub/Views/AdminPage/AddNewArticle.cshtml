@@ -1,0 +1,553 @@
+﻿@model sports_hub.Models.ViewModels.AddNewArticleViewModel
+@{
+    Layout = "/Views/AdminPage/_Layout.cshtml";
+}
+
+@section sectionInteractButtons {
+    <span class="buttonCancel" onclick="callCancelAttentionWindow(true)">Cancel</span>
+    <a><button class="buttonSmaller" onclick="submitForm()"; style="background-color: #9c9c9c; cursor: default;">Save</button></a>
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8 " />
+    <link rel="stylesheet" href="~/css/AdminPage/addNewArticle.css" />
+    <link rel="stylesheet" href="~/css/AdminPage/interactButtonsSection.css" />
+    <script src="https://cdn.tiny.cloud/1/sxtb8cl1p12i1fc0xf4eece2gnkyo4u3bmhuy85wp27emc8m/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+<body>
+    <div id="cancelAttention">
+        <div class="cancelAttentionWindow">
+            <span class="cancelAttentionWindowCircle"></span>
+            <img class="cancelAttentionIcon" src="~/imagesAdminPage/AttentionIcon.svg"/> 
+            <div class="cancelAttentionWindowTextContainer">
+                <span class="cancelAttentionWindowText cancelAttentionWindowTextBold">You are about to discard the changes!</span>
+                <span class="cancelAttentionWindowText">Entered information will be missed!</span>
+                <span class="cancelAttentionWindowText">Are you sure?</span>
+            </div>
+            <div class="cancelAttentionWindowButtonsContainer">
+                <span class="cancelAttentionWindowButtonNo" onclick="callCancelAttentionWindow(false)"> No</span>
+                <a asp-area="" asp-controller="AdminPage" asp-action="Articles" asp-route-category="@ViewData["Title"]"><button class="cancelAttentionWindowButtonYes">Yes</button></a>
+            </div>
+        </div>
+    </div>
+    <div id="containerMain">
+        <form method="post" id="Form" enctype="multipart/form-data">
+            <div id="containerPreviewIcon">
+                <img id="previewIcon" src="~/imagesAdminPage/PreviewIcon.svg" />
+            </div>
+            <div class="containerPicture">
+                <span class="selectTitle">PICTURE *</span>
+                <div>
+                    <input type="file" name="image" id="inputFileUpload" accept=".jpg,.jpeg,.png" onchange="imageChanged.checked = true; checkForFormCompletion(); toggleImageInstantViewSize(); hideStartPicturePopOuts();" />
+                    <div id="containerDragAndDrop">
+                        <label id="labelFileUpload" class="labelFileUpload" for="inputFileUpload">
+                            @if (ViewBag.IsEditing == "True")
+                            {
+                                <img id="imageInstantView" src="data:image/png; base64, @ViewBag.Image" width="100%"/>
+                            }
+                            else
+                            {
+                                <img id="imageInstantView" />
+                            }
+                            <div id="containerPicturePopOuts">
+                                <span class="pictureCircle"></span>
+                                <img class="pictureIcon" src="~/imagesAdminPage/PictureIcon.svg" />
+                                <span class="pictureText1">+Add picture or drop it right here</span>
+                                <span class="pictureText2">You can add next formats: .png .jpg .jpeg</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div id="containerPicturePopOutsStart">
+                        <span class="pictureCircle"></span>
+                        <img class="pictureIcon" src="~/imagesAdminPage/PictureIcon.svg" />
+                        <span class="pictureText1">+Add picture or drop it right here</span>
+                        <span class="pictureText2">You can add next formats: .png .jpg .jpeg</span>
+                    </div>
+                </div>
+            </div>
+            <div class="containerSelections">
+                <div class="containerSelect containerSelectLeft">
+                    <span class="selectTitle">CONFERENCE *</span>
+                    <div class="customSelect">
+                        <select name="Conference" id="selectConference">
+                            <option disabled selected hidden value="">Not Selected</option>
+                            @foreach (var item in Model.Conferences)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="containerSelect containerSelectCenter">
+                    <span class="selectTitle">TEAM *</span>
+                    <div class="customSelect">
+                        <select name="Team" id="selectTeam">
+                            <option disabled selected hidden value="">Not Selected</option>
+                            @foreach (var item in Model.Teams)
+                            {
+                                <option class="teamFromConference_@item.Conference.Id" value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="containerSelect">
+                    <span class="selectTitle">LOCATION *</span>
+                    <div class="customSelect">
+                        <select name="Location" id="selectLocation">
+                            <option disabled selected hidden value="">Not Selected</option>
+                            @foreach (var item in Model.Locations)
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="containerInput">
+                    <span class="inputTitle">ALT. *</span>
+                    <input name="Article.Alt_picture_text" id="inputAlt" value="@ViewBag.Alt_picture_text" onkeyup="checkForFormCompletion()" placeholder="Alternative text for picture" />
+                </div>
+                <div class="containerInput">
+                    <span class="inputTitle">ARTICLE HEADLINE *</span>
+                    <input name="Article.Headline" id="inputHeadline" value="@ViewBag.Headline" onkeyup="checkForFormCompletion()" placeholder="Name" />
+                </div>
+                <div class="containerInput">
+                    <span class="inputTitle">CAPTION *</span>
+                    <input name="Article.Caption" id="inputCaption" class="captionInput" value="@ViewBag.Caption" onkeyup="checkForFormCompletion()" placeholder="Write caption text here" />
+                </div>
+            </div>
+            <div>
+                <span class="inputTitle">CONTENT</span>
+                <div class="containerTextEditor">
+                    <input name="Article.Content" id="content" type="text" value="@ViewBag.Content">
+                    <div class="containerComments">
+                        <div class="containerCommentsInner">
+                            <span class="spanComments">Comments: </span>
+                            <span class="spanComments" id="spanCommentsStatus">Hide</span>
+                        </div>
+                        <div class="containerCommentsInner">
+                            <label class="switch" onclick="changeShowCommentsText()">
+                                <input name="Article.Show_comments" id="switchShowComments" type="checkbox" value="true" />
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="checkbox" value="true" name="imageChanged" id="imageChanged" class="hidden"/>
+        </form>
+    </div>
+    <script>
+        tinymce.init({
+            width: '100%',
+            height: 380,
+            max_height: 500,
+            min_height: 200,
+            selector: 'input#content',  // change this value according to the HTML
+            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright alignjustify | outdent indent | image',
+            menubar: "none"
+        });
+
+        window.addEventListener("load", function (event) {
+            document.getElementById("selectLocation").selectedIndex = 0;
+            upgradeSelects();
+            checkForFormCompletion();
+
+            imageChanged = this.document.getElementById("imageChanged");
+
+            if ("@ViewBag.IsEditing" != "True") {
+                resetSelectTeamIndexes();
+                imageChanged.checked = true;
+            }
+            else {
+                imageChanged.checked = false;
+            }
+
+            fileInput = document.querySelector('input[type="file"]');
+
+            fileInput.addEventListener('change', function () {
+                if (this.files && this.files[0]) {
+                    setImageFromInput(this);
+                }
+            });
+
+            if (fileInput.files[0]) {
+                setImageFromInput(fileInput);
+            }
+
+            if ("@ViewBag.IsEditing" == "True") {
+                fillForm();
+            }
+        });
+
+        window.addEventListener("click", function (event) {
+            if (event.target.matches(".select-item")) {
+                checkForFormCompletion();
+            }
+        });
+
+        function fillForm() {
+
+            if ("@ViewBag.Show_comments" == "True") {
+                document.getElementById("switchShowComments").checked = true;
+                changeShowCommentsText();
+            }
+
+            var option = findCustomSelectOptionBySelectId("selectConference", "@ViewBag.Conference");
+            setValueForCustomSelect(option);
+            changeCustomTeamSelectOptions(option);
+
+            option = findCustomSelectOptionBySelectId("selectTeam", "@ViewBag.Team");
+            setValueForCustomSelect(option);
+
+            option = findCustomSelectOptionBySelectId("selectLocation", "@ViewBag.Location");
+            setValueForCustomSelect(option);
+
+            hideStartPicturePopOuts();
+            toggleImageInstantViewSize();
+
+            checkForFormCompletion();
+        }
+
+        function findCustomSelectOptionBySelectId(selectId, value) {
+            select = document.getElementById(selectId);
+            div = select.nextSibling.nextSibling.nextSibling;
+            var option;
+
+            for (i = 0; i < div.children.length; i++) {
+                if (div.children[i].getAttribute("value") == value) {
+                    option = div.children[i];
+                }
+            }
+
+            return option;
+        }
+
+        function setValueForCustomSelect(option) {
+            var y, i, k, s, h, sl, yl;
+            s = option.parentNode.parentNode.getElementsByTagName("select")[0];
+            sl = s.length;
+            h = option.parentNode.previousSibling;
+
+            for (i = 0; i < sl; i++) {
+                if (s.options[i].innerHTML == option.innerHTML) {
+                    s.selectedIndex = i;
+                    h.innerHTML = option.innerHTML;
+                    y = option.parentNode.getElementsByClassName("same-as-selected");
+                    yl = y.length;
+
+                    for (k = 0; k < yl; k++) {
+                        y[k].classList.remove("same-as-selected");
+                    }
+
+                    option.classList.toggle("same-as-selected");
+                    break;
+                }
+            }
+        }
+
+        function changeCustomTeamSelectOptions(option) {
+            resetSelectTeamIndexes();
+            currentConference = option.getAttribute("value");
+            teams = document.getElementsByClassName("_team");
+
+            for (i = 0; i < teams.length; i++) {
+                classes = Object.values(teams[i].classList);
+
+                for (j = 0; j < classes.length; j++) {
+                    teamConference = getConference(classes[j]);
+
+                    if (currentConference == teamConference) {
+                        teams[i].classList.toggle("hidden", false);
+                    }
+                    else if (currentConference != teamConference && teamConference != "") {
+                        teams[i].classList.toggle("hidden", true);
+                    }
+                }
+            }
+        }
+
+        function setImageFromInput(fileInput) {
+            var img = document.getElementById("imageInstantView");
+            img.onload = () => {
+                URL.revokeObjectURL(img.src);
+            }
+            img.src = URL.createObjectURL(fileInput.files[0]);
+        }
+
+        function checkForFormCompletion() {
+            if (document.getElementsByName("Conference")[0].value != "" &&
+                document.getElementsByName("Team")[0].value != "" &&
+                document.getElementsByName("Location")[0].value != "" &&
+                document.getElementsByName("Article.Alt_picture_text")[0].value != "" &&
+                document.getElementsByName("Article.Caption")[0].value != "" &&
+                document.getElementsByName("Article.Headline")[0].value != "" &&
+                (document.getElementById("inputFileUpload").files.length != 0 || !imageChanged.checked))
+            {
+                saveButton = document.getElementsByClassName("buttonSmaller")[0];
+                saveButton.style.backgroundColor = "#d72130";
+                saveButton.style.cursor = "pointer";
+                saveButton.removeAttribute("disabled");
+            }
+            else {
+                saveButton = document.getElementsByClassName("buttonSmaller")[0];
+                saveButton.style.backgroundColor = "#9c9c9c";
+                saveButton.style.cursor = "default";
+                saveButton.disabled = "true";
+            }
+        }
+
+        function submitForm() {
+            if ("@ViewBag.IsEditing" == "True") {
+                editArticleAjax();
+            }
+            else {
+                document.getElementById("Form").submit();
+            }
+        }
+
+        function editArticleAjax() {
+            team = document.getElementById("selectTeam").value;
+            loc = document.getElementById("selectLocation").value;
+            headline = document.getElementById("inputHeadline").value;
+            caption = document.getElementById("inputCaption").value;
+            alt = document.getElementById("inputAlt").value;
+            content = tinymce.get("content").getContent();
+            showComments = document.getElementById("switchShowComments").checked;
+            image_changed = document.getElementById("imageChanged").checked;
+
+            var formData = new FormData();
+            if (imageChanged.checked) {
+                inputFiles = document.getElementById("inputFileUpload").files;
+                formData.append("image", inputFiles[0]);
+            }
+            else {
+                formData.append("image", null);
+            }
+            formData.append("category", "@ViewData["Title"]");
+            formData.append("articleId", "@ViewBag.ArticleId");
+            formData.append("headline", headline);
+            formData.append("caption", caption);
+            formData.append("alt", alt);
+            formData.append("content", content);
+            formData.append("showComments", showComments);
+            formData.append("team", team);
+            formData.append("location", loc);
+            formData.append("imageChanged", image_changed);
+
+            $.ajax({
+                url: '@Url.Action("SaveEditedArticle", "AdminPage")',
+                processData: false,
+                contentType: false,
+                type: "PUT",
+                data: formData,
+                success: function (res) {
+                    location.href = res;
+                }
+            });
+        }
+
+        function changeShowCommentsText() {
+            checkBox = document.getElementById("switchShowComments");
+            spanStatus = document.getElementById("spanCommentsStatus");
+
+            if (checkBox.checked) {
+                spanStatus.innerText = "Show";
+                spanStatus.classList.toggle("spanCommentsRed", true);
+            }
+            else {
+                spanStatus.innerText = "Hide";
+                spanStatus.classList.toggle("spanCommentsRed", false);
+            }
+        }
+
+        function resetSelectTeamIndexes() {
+            document.getElementById("selectTeam").selectedIndex = 0;
+            document.getElementsByClassName("divSelectTeamActive")[0].textContent = "Not Selected";
+            divs = document.getElementsByClassName("divSelectTeam")[0].children;
+
+            for (var i = 0; i < divs.length; i++) {
+                divs[i].classList.toggle("same-as-selected", false);
+            }
+        }
+
+        function getConference(str) {
+            if (str.includes("teamFromConference_")) {
+                return str.replace("teamFromConference_", "");
+            }
+            else {
+                return "";
+            }
+        }
+
+        function callCancelAttentionWindow(value) {
+            cancelAttentionWindow = document.getElementById("cancelAttention");
+
+            if (value) {
+                cancelAttentionWindow.style.display = "block";
+            }
+            else {
+                cancelAttentionWindow.style.display = "none";
+            }
+        }
+
+        function toggleImageInstantViewSize() {
+            document.getElementById("imageInstantView").classList.toggle("imageInstantView", true);
+            document.getElementById("labelFileUpload").style.border = "none";
+        }
+
+        function hideStartPicturePopOuts() {
+            document.getElementById("containerPicturePopOutsStart").classList.toggle("hidden", true);
+        }
+    </script>
+
+    <script> // scripts for drag and drop image
+        dragAndDrop = document.getElementById("containerDragAndDrop");
+        fileInput = document.getElementById("inputFileUpload");
+
+        dragAndDrop.ondragover = dragAndDrop.ondragenter = function (event) {
+            event.preventDefault();
+        };
+
+        dragAndDrop.ondrop = function (event) {
+            if (event.dataTransfer.files.length == 1 && (event.dataTransfer.files[0].type == "image/jpeg" || event.dataTransfer.files[0].type == "image/png")) {
+                fileInput.files = event.dataTransfer.files;
+
+                setImageFromInput(fileInput);
+                checkForFormCompletion();
+                toggleImageInstantViewSize();
+                hideStartPicturePopOuts();
+                imageChanged.checked = true;
+            }
+
+            event.preventDefault();
+        };
+    </script>
+
+    <script> // scripts for upgrading built-in 'select'
+        function upgradeSelects() {
+            var x, i, j, l, ll, selElmnt, a, b, c;
+            x = document.getElementsByClassName("customSelect");
+            l = x.length;
+
+            for (i = 0; i < l; i++) {
+                selElmnt = x[i].getElementsByTagName("select")[0];
+                ll = selElmnt.length;
+                a = document.createElement("DIV");
+                a.setAttribute("class", "select-selected");
+                a.innerHTML = selElmnt.options[selElmnt.selectedIndex].innerHTML;
+                objectName = selElmnt.name;
+
+                x[i].appendChild(a);
+                b = document.createElement("DIV");
+                b.setAttribute("class", "select-items hidden");
+
+                if (objectName == "Team") {
+                    a.classList.toggle("divSelectTeamActive");
+                    b.classList.toggle("divSelectTeam");
+                }
+
+                for (j = 1; j < ll; j++) {
+                    c = document.createElement("DIV");
+                    c.innerHTML = selElmnt.options[j].innerHTML;
+
+                    if (objectName == "Conference") {
+                        c.setAttribute("class", "_conference");
+                    }
+                    else if (objectName == "Team") {
+                        c.setAttribute("class", "_team hidden " + selElmnt.options[j].className);
+                    }
+
+                    c.setAttribute("value", selElmnt.options[j].value);
+                    c.classList.toggle("select-item", true);
+
+                    c.addEventListener("click", function (e) {
+                        var y, i, k, s, h, sl, yl;
+                        s = this.parentNode.parentNode.getElementsByTagName("select")[0];
+                        sl = s.length;
+                        h = this.parentNode.previousSibling;
+
+                        for (i = 0; i < sl; i++) {
+                            if (s.options[i].innerHTML == this.innerHTML) {
+                                s.selectedIndex = i;
+                                h.innerHTML = this.innerHTML;
+                                y = this.parentNode.getElementsByClassName("same-as-selected");
+                                yl = y.length;
+
+                                for (k = 0; k < yl; k++) {
+                                    y[k].classList.remove("same-as-selected");
+                                }
+
+                                this.classList.toggle("same-as-selected");
+                                break;
+                            }
+                        }
+                        h.click();
+                    });
+                    b.appendChild(c);
+                }
+                x[i].appendChild(b);
+
+                a.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    closeAllSelect(this);
+                    this.nextSibling.classList.toggle("hidden");
+                    this.classList.toggle("select-arrow-active");
+                });
+            }
+
+            window.addEventListener("click", function (event) {
+                if (event.target.matches("._conference")) {
+                    resetSelectTeamIndexes();
+                    checkForFormCompletion();
+
+                    currentConference = event.target.getAttribute("value");
+                    teams = document.getElementsByClassName("_team");
+
+                    for (i = 0; i < teams.length; i++) {
+                        classes = Object.values(teams[i].classList);
+
+                        for (j = 0; j < classes.length; j++) {
+                            teamConference = getConference(classes[j]);
+
+                            if (currentConference == teamConference) {
+                                teams[i].classList.toggle("hidden", false);
+                            }
+                            else if (currentConference != teamConference && teamConference != "") {
+                                teams[i].classList.toggle("hidden", true);
+                            }
+                        }
+                    }
+                }
+            });
+
+            function closeAllSelect(elmnt) {
+                var x, y, i, xl, yl, arrNo = [];
+                x = document.getElementsByClassName("select-items");
+                y = document.getElementsByClassName("select-selected");
+                xl = x.length;
+                yl = y.length;
+
+                for (i = 0; i < yl; i++) {
+                    if (elmnt == y[i]) {
+                        arrNo.push(i)
+                    }
+                    else {
+                        y[i].classList.remove("select-arrow-active");
+                    }
+                }
+                for (i = 0; i < xl; i++) {
+                    if (arrNo.indexOf(i)) {
+                       x[i].classList.add("hidden");
+                    }
+                }
+            }
+            document.addEventListener("click", closeAllSelect);
+        }
+    </script>
+
+</body>
+</html>

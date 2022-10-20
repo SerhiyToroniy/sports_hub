@@ -1,0 +1,16 @@
+﻿@{
+    Layout = "/Views/AdminPage/_Layout.cshtml";
+    ViewData["Title"] = "Lifestyle";
+}
+
+@section sectionInteractButtons {
+    <a asp-area="" asp-controller="AdminPage" asp-action="AddNewLifestyleArticle"  asp-route-Category="Lifestyle" style="text-decoration: none;">
+        <button class="buttonBigger">+ New Article</button>
+    </a>
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="~/css/AdminPage/interactButtonsSection.css" />
+</head>

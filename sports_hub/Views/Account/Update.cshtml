@@ -1,0 +1,114 @@
+﻿@model sports_hub.Models.ViewModels.UpdateUserInfoViewModel
+@using System.Drawing
+@using System.IO
+@{
+    ViewData["Title"] = "Profile";
+    Layout = "_ProfileLayout";
+}
+<head>
+    <link rel="stylesheet" href="~/css/Account/password-reset.css" />
+    <link rel="stylesheet" href="~/css/Account/upd-user-info.css" />
+    <link rel="stylesheet" href="~/css/AdminPage/addNewArticle.css" />
+    <script src="https://cdn.tiny.cloud/1/sxtb8cl1p12i1fc0xf4eece2gnkyo4u3bmhuy85wp27emc8m/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+
+<div id="personal" class="tabcontent">
+    <form method="post" class="user_login_form" enctype="multipart/form-data">
+        <div asp-validation-summary="All" class="input_error"></div>
+        <div class="containerPicture">
+            <span class="selectTitle">USER LOGO</span>
+            <div>
+                @{
+                    string image = Convert.ToBase64String(ViewBag.UserInfo.ProfileImage);
+                }
+                <input type="file" asp-for="ProfileImage" name="File" id="inputFileUpload" accept=".jpg,.jpeg,.png" onchange="console.log('sadas'); toggleImageInstantViewSize(); console.log('sadas');" />
+                <div id="containerDragAndDrop">
+                    <label id="labelFileUpload" class="labelFileUpload" for="inputFileUpload"
+                           style="height: 120px; width: 120px; border-radius: 100%; margin-left: auto; display: block; margin-right: auto;">
+                        <img id="imageInstantView" src="data:image/png; base64, @image" style="height: 118px; width: 118px; border-radius: 100%; margin-left: auto; display: block; margin-right: auto;" />
+                        <div id="containerPicturePopOuts">
+                            <span class="pictureCircle" style="position: absolute; left: 50%; top: 350px; width: 40PX; height: 40PX;"></span>
+                            <img class="pictureIcon" src="~/imagesAdminPage/PictureIcon.svg" style="position: absolute; left: 50%; top: 350px; width: 20PX; height: 20PX;" />
+                        </div>
+                    </label>
+                </div>
+                <div id="containerPicturePopOutsStart">
+                    <span class="pictureCircle" style="position: absolute; left: 50%; top: 350px; width: 40PX; height: 40PX;"></span>
+                    <img class="pictureIcon" src="~/imagesAdminPage/PictureIcon.svg" style="position: absolute; left: 50%; top: 350px; width: 20PX; height: 20PX;" />
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="FirstName" class="cred_label">First Name</label>
+            <input asp-for="FirstName" class="cred_input" value="@ViewBag.UserInfo.FirstName" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="LastName" class="cred_label">Last Name</label>
+            <input asp-for="LastName" class="cred_input" value="@ViewBag.UserInfo.LastName" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Email" class="cred_label">Email</label>
+            <input asp-for="Email" class="cred_input" value="@ViewBag.UserInfo.Email" />
+        </div>
+
+        <div>
+            <button type="submit" class="submit_button">UPDATE PROFILE</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    window.addEventListener("load", function (event) {
+        document.querySelector('input[type="file"]').addEventListener('change', function () {
+            if (this.files && this.files[0]) {
+                var img = document.getElementById("imageInstantView");
+                img.onload = () => {
+                    URL.revokeObjectURL(img.src);
+                }
+                img.src = URL.createObjectURL(this.files[0]);
+            }
+        });
+    });
+
+    window.addEventListener("click", function (event) {
+        if (event.target.matches(".select-item")) {
+        }
+    });
+
+
+    function toggleImageInstantViewSize() {
+        document.getElementById("imageInstantView").classList.toggle("imageInstantView", true);
+        document.getElementById("labelFileUpload").style.border = "none";
+    }
+
+</script>
+
+<script>
+    // scripts for drag and drop image
+    dragAndDrop = document.getElementById("containerDragAndDrop");
+    fileInput = document.getElementById("inputFileUpload");
+
+    dragAndDrop.ondragover = dragAndDrop.ondragenter = function (event) {
+        event.preventDefault();
+    };
+
+    dragAndDrop.ondrop = function (event) {
+        if (event.dataTransfer.files.length == 1 && (event.dataTransfer.files[0].type == "image/jpeg" || event.dataTransfer.files[0].type == "image/png")) {
+            fileInput.files = event.dataTransfer.files;
+            img = document.getElementById("imageInstantView");
+
+            img.onload = () => {
+                URL.revokeObjectURL(img.src);
+            }
+            img.src = URL.createObjectURL(fileInput.files[0]);
+            toggleImageInstantViewSize();
+            hideStartPicturePopOuts();
+        }
+
+        event.preventDefault();
+    };
+</script>
+
+

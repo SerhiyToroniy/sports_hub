@@ -1,0 +1,47 @@
+﻿@model sports_hub.Models.Entities.FooterPage
+@{
+    Layout = "/Views/AdminPage/_Layout.cshtml";
+    ViewData["Title"] = "Footer";
+    ViewData["SectionName"] = ViewBag.Section.SectionName;
+}
+<head>
+    <link rel="stylesheet" href="~/css/AdminPage/footerconfig.css">
+</head>
+<body>
+    @{
+        if (ViewData["SectionName"].ToString() != "Newsletter")
+        {
+            <div>
+                <partial name="/Views/AdminPage/FooterConfig/_AddFormFooterPartial.cshtml" model="Model" view-data="ViewData" />
+            </div>
+        }
+    }
+
+
+    <div>
+        <partial name="/Views/AdminPage/FooterConfig/_MainPartFooterPartial.cshtml" model=ViewBag.PageList view-data="ViewData" />
+    </div>
+
+    @{
+        if (ViewBag.Page != null)
+        {
+            if (ViewBag.Page.Name != "Sign up to receive the latest sports news")
+            {
+                if (ViewBag.Page.Name != "Contact Us")
+                {
+                    <div>
+                        <partial name="/Views/AdminPage/FooterConfig/_EditFormFooterPartial.cshtml" model="Model" view-data="ViewData" />
+                    </div>
+                }
+                else
+                {
+                    <div>
+                        <partial name="/Views/AdminPage/FooterConfig/_EditContactUs.cshtml" model="ViewBag.AdminInfo" view-data="ViewData" />
+                    </div>
+                }
+            }
+        }
+    }
+</body>
+
+

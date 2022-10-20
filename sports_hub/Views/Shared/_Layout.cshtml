@@ -1,0 +1,219 @@
+﻿@using Microsoft.AspNetCore.Http
+@model sports_hub.Models.Entities.User
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+@inject IViewLocalizer Localizer
+@using Microsoft.AspNetCore.Identity
+@using sports_hub.Models.Entities
+@using System.Drawing
+@using System.IO
+@inject UserManager<User> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Sports Hub</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/HomeStyle.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+    <script src="~/js/HomeScript.js" asp-append-version="true"></script>
+</head>
+<body>
+    <header>
+        <nav class="header fixed-top">
+            <button type="button" class="btn home" onclick="location.href='@Url.Action("Index", "Home")'">
+                Sports Hub
+            </button>
+            <form class="form-inline header">
+                <button class="btn my-2 my-sm-0" type="submit" style="border:0px;">
+                    <img src="~/images/Search.svg" alt="Search" />
+                </button>
+                <input oninput="searchWithInterval(this.value)" class="form-control search header mr-sm-2" type="search" placeholder="@Localizer["SearchBy"]" aria-label="Search by">
+                <div id="searchResults">
+                </div>
+            </form>
+
+            <div class="nav-item active header">
+                <a class="nav-link share" href="#">@Localizer["Share"]</a>
+                <div class="fb-share-button" data-href=@ViewBag.urlForShareButtons data-layout="button" data-size="small">
+                    <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=@ViewBag.urlForShareButtons&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">
+                        <img src="~/images/Facebook.svg" alt="Facebook" />
+                    </a>
+                </div>
+                <a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=I%27m%20reading%20an%20interesting%20website%20about%20sports @ViewBag.urlForShareButtons" data-size="small">
+                    <img src="~/images/Twitter.svg" alt="Twitter" />
+                </a>
+                <div class="gplus-share-button" data-href=@ViewBag.urlForShareButtons data-layout="button" data-size="small">
+                    <a target="_blank" href="https://plus.google.com/share?u=@ViewBag.urlForShareButtons">
+                        <img src="~/images/GooglePlus.svg" alt="Google+" />
+                    </a>
+                </div>
+            </div>
+            <div class="nav-item header dropdown">
+                @{
+                    if (User.Identity.IsAuthenticated)
+                    {
+                        var user = await UserManager.GetUserAsync(User);
+                        string image = Convert.ToBase64String(user.ProfileImage);
+                        
+                        <div style="display:flex; align-items: center;">
+                            <img src="data:image/png; base64, @image" style="width:30px; border-radius: 100%; height: 30px;" />
+                            <a class="nav-link dropdown-toggle" style="color:black;" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                @user.FirstName @user.LastName
+                            </a>
+
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="/Account/Update">@user.FirstName @user.LastName<br /><p style="color: #7F7B7B;">@User.Identity.Name</p></a>
+                                <a class="dropdown-item" href="/Account/Update">View profile</a>
+                                <a class="dropdown-item" href="/Account/ChangePassword">Change password</a>
+                                <a class="dropdown-item" href="#">My surveys</a>
+                                <a class="dropdown-item" href="#">Team hub</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" asp-action="Logout" asp-controller="Account">Log out</a>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <a class="sign-up" asp-area="" asp-controller="Account" asp-action="Register">@Localizer["SignUp"]</a>
+                        <button class="btn log-in" onclick="location.href='@Url.Action("Login", "Account")'">
+                            @Localizer["LogIn"]
+                        </button>
+                    }
+                }
+
+            <div>
+                @*<div>
+                    <partial name="/Views/Shared/_SelectLanguagePartial.cshtml" model=ViewBag.AvailableLanguages view-data="ViewData" />
+                </div>*@
+            </div>
+            </div>
+        </nav>
+    </header>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "/data/categories",
+                data: {},
+                dataType: "json",
+                success: function (msg) {
+                    console.log(msg);
+                    var items = [];
+                    $.each(msg, function (key, val) {
+
+                        items.push("<li class='nav-item'> <a id='" + val.name + "' class='nav-link categories' onmouseover='showConference(this, @Context.Session.GetInt32("LeftBarIndex"))' href='/CategoryPortal/" + val.name+"'>" + val.name + "</a><div class='categories'></div></li>");
+                    });
+                    $(items.join("")).insertAfter("#left-bar-list li:first");
+                    var leftBarList = document.getElementById("left-bar-list");
+                    leftBarList.children[@Context.Session.GetInt32("LeftBarIndex")].children[0].classList.add("active");
+                },
+                error: function (req, status, error) {
+                    console.log(msg);
+                }
+            });
+
+        });
+    </script>
+    <div style="margin-left:10px; margin-right:100px; margin-top:160px;">
+        <main role="main" class="home-layout">
+            <div class="leftbar">
+                <div class="rectangle"></div>
+                <ul id="left-bar-list" class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link categories"  asp-area="" asp-controller="Home" asp-action="Index">HOME</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link categories" href="#">TEAM HUB</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link categories" href="#">LIFESTYLE</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link categories" href="#">DEALBOOK</a>
+                    </li>
+                    <li class="nav-item categories">
+                        <a class="nav-link" href="#">VIDEO</a>
+                    </li>
+                </ul>
+
+                <div class="follow" style="margin-top:70px; font-size:16px; color:#B2B2B2; padding:16px;">
+                    Follow
+                    <div class="follow ico" style="display:grid; grid-template-columns:40px 40px; grid-template-rows:40px 40px; margin-top:20px;">
+                        <img src="~/images/Facebook.svg" alt="Facebook" />
+                        <img src="~/images/Twitter.svg" alt="Twitter" />
+                        <img src="~/images/Google.svg" alt="Google" />
+                        <img src="~/images/YouTube.svg" alt="YouTube" />
+                    </div>
+                </div>
+            </div>
+            <svg id="svg-filter" style="display:none;">
+                <filter id="svg-blur">
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="4"></feGaussianBlur>
+                </filter>
+            </svg>
+            <div id="blur" onclick="hideLeftBar(@Context.Session.GetInt32("LeftBarIndex"))">
+                @RenderBody()
+            </div>
+        </main>
+    </div>
+
+    <footer class="footer">
+        <div class="upper-footer">
+            <div class="footer-logo-upper"></div>
+            <div class="columns">
+                <div class="company-info-title">
+                    @Localizer["CompanyInfo"]
+                    <br />
+                    <a class="company-info-links" href="https://google.com" target="_blank">@Localizer["AboutSportsHub"]</a>
+                    <br />
+                    <a class="company-info-links" href="https://google.com" target="_blank">@Localizer["News"]</a>
+                    <br />
+                    <a class="company-info-links" href="https://google.com" target="_blank">@Localizer["Advertising"]</a>
+                    <br />
+                    <a class="company-info-links" href="https://google.com" target="_blank">@Localizer["Events"]</a>
+                    <br />
+                    <a class="company-info-links" href="https://google.com" target="_blank">@Localizer["ContactUs"]</a>
+                </div>
+                <div class="company-info-title">
+                    @Localizer["Contributers"]
+                    <br />
+                    <a class="company-info-links" href="https://google.com" target="_blank">@Localizer["FeaturedWriters"]</a>
+                    <br />
+                    <a class="company-info-links" href="https://google.com" target="_blank">@Localizer["FeaturedTeamWriters"]</a>
+                    <br />
+                    <a class="company-info-links" href="https://google.com" target="_blank">@Localizer["Internship"]</a>
+                    <br />
+                    <a class="company-info-links" href="https://google.com" target="_blank">@Localizer["ExternalLink"]</a>
+                    <br />
+                </div>
+                <div class="company-info-title">
+                    @Localizer["Newsletter"]
+                    <br />
+                    <a class="company-info-links" href="https://google.com" target="_blank">@Localizer["ExternalLink2"]</a>
+                    <br />
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="lower-footer">
+            <a class="footer-logo" href="/Home">Sports Hub</a>
+            <div class="contact-us-footer">
+                Copyright &copy;2021 Sports Hub<br />
+                <a class="privacy-terms" href="/Home/Privacy">@Localizer["PrivacyAndTerms"]</a>
+            </div>
+            <div class="clear"></div>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

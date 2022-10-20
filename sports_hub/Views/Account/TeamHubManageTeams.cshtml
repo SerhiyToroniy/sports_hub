@@ -1,0 +1,193 @@
+﻿@{ ViewData["Title"] = "TeamHub";
+    Layout = "_ProfileLayout"; }
+
+<head>
+    <script type="text/javascript" src='object.js'></script>
+    <meta charset="utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+</head>
+<body>
+    <div class="main-content">
+        <div class="headline"><div class="text">FOLLOW YOUR FAVOURITE TEAMS</div></div>
+        <div class="search_team">
+            <input id="search" class="search_input" placeholder="Type a team name" onkeyup="Search(event)" />
+            <button onclick="Follow()" class="follow-button">Follow</button>
+            <div id="dropdown-content-id" class="dropdown-content">
+                
+            </div>
+        </div>
+        <div id="user-teams" class="list_of_teams">
+            
+        </div>
+        <div class="line"></div>
+        <div class="manage-team-headline"><div class="text_manage_teams"></div></div>
+    </div>
+</body>
+
+<script>
+
+    var user = '@ViewBag.Username';
+    var userTeams = [];
+    let choosed_team = '';
+    window.addEventListener("load", function (event) {
+        loadTeams();
+    });
+
+    function loadTeams() {
+        $("#user-teams").empty();
+        userTeams = [];
+        $.ajax({
+            url: '@Url.Action("GetUserTeams", "Data")',
+            type: 'GET',
+            dataType: 'json',
+            data: { username: user },
+            success: function (data) {
+                var list = data;
+                $.each(list, function (index, item) {
+                    var form_div = document.createElement('div');
+                    userTeams.push(item.name);
+                    form_div.innerHTML = `<div class="block">
+                                            <img src="/images/Account/Oval Copy 6.svg" width="60px" height="60px" />
+                                            <div class="text-and-delete">
+                                                <div class="text-inside-block">
+                                                    <span>${item.name}</span>
+                                                    <span>fdfkdfdlkf</span>
+                                                </div>
+                                                <button class="delete_but" onclick="Delete('${item.name}')"><img src="/images/Account/Layer_x0020_1.svg" width="12px" height="12px" /></button>
+                                            </div>
+                                        </div>
+                                        `;
+                    document.getElementById('user-teams').appendChild(form_div);
+                });
+            },
+            error: function (x, e) {
+            }
+        });
+        console.log(userTeams);
+    }
+
+    var search_results = [];
+
+    function Search(e) {
+        search = document.getElementById('search').value;
+        dropdown = document.getElementById('dropdown-content-id');
+        dropdown.innerHTML = "";
+        dropdown.style.display = "block";
+        if (e.keyCode != 16) {
+            if (search.length == 1) {
+                getTeamsWhileTyping(search);
+            }
+            else if (search.length > 1) {
+                $.each(search_results, function (index, item) {
+                    if (item.startsWith(search)) {
+                        createAnchor(item);
+                    }
+                });
+            }
+        }
+    }
+
+    function createAnchor(text) {
+        var team = document.createElement('a');
+        team.innerText = text;
+        team.className = "team";
+        team.onclick = () => { displyChoosenTeam(text); };
+        document.getElementById('dropdown-content-id').appendChild(team);
+    }
+
+    window.addEventListener('click', function (e) {
+        dropdown = document.getElementById('dropdown-content-id');
+        search = document.getElementById('search');
+        if (!dropdown.contains(e.target) && !search.contains(e.target)) {
+            dropdown.style.display = "none";
+            search.value = "";
+        }
+        else if (dropdown.contains(e.target)) {
+            dropdown.style.display = "none";
+        }
+    });
+
+    function getTeamsWhileTyping(search) {
+        search_results = [];
+        $.ajax({
+            url: '@Url.Action("GetTeamsTeamHub", "Data")',
+            type: 'GET',
+            dataType: 'json',
+            data: { search: search },
+            success: function (data) {
+                var list = data;  
+                $.each(list, function (index, item) {
+                    search_results.push(item.name);
+                    createAnchor(item.name);
+                });     
+            },
+            error: function (x, e) {
+            }
+        });
+    }
+
+    function displyChoosenTeam(team_name) {
+        $.ajax({
+            url: '@Url.Action("GetTeam", "Data")',
+            type: 'GET',
+            dataType: 'json',
+            data: { name: team_name },
+            success: function (data) {
+                var form_div = document.createElement('div');
+                form_div.innerHTML = `<div class="block">
+                                            <img src="/images/Account/Oval Copy 6.svg" width="60px" height="60px" />
+                                            <div class="text-and-delete">
+                                                <div class="text-inside-block">
+                                                    <span>${data.name}</span>
+                                                    <span>fdfkdfdlkf</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        `;
+                $("#user-teams").empty();
+                console.log(userTeams);
+                document.getElementById('search').value = data.name;
+                document.getElementById('user-teams').appendChild(form_div);
+                choosed_team = data.name;
+            },
+            error: function (x, e) {
+            }
+        });
+    }
+
+    function Follow() {
+        if (choosed_team != '' && !userTeams.includes(choosed_team)) {
+            $.ajax({
+            url: '@Url.Action("AddTeam", "Data")',
+            type: 'POST',
+            dataType: 'json',
+            data: { user_name: user, team_name: choosed_team },
+            success: function () {
+            },
+            complete: function () {
+                loadTeams();
+            },
+            error: function (x, e) {
+            }
+        });
+        }
+    }
+
+    function Delete(team_name) {
+        $.ajax({
+            url: '@Url.Action("DeleteUserTeam", "Data")',
+            type: 'DELETE',
+            dataType: 'json',
+            data: { user_name: user, team_name: team_name },
+            success: function () {
+                
+            },
+            complete: function () {
+                loadTeams();
+            },
+            error: function (x, e) {
+            }
+        });
+    }
+
+</script>

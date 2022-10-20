@@ -1,0 +1,88 @@
+﻿@using sports_hub.Models.Entities.Navigation;
+@{
+    Layout = "/Views/AdminPage/_Layout.cshtml";
+    ViewData["Title"] = "Information Architecture";
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="~/css/AdminPage/InformationArchitecture.css" />
+    <script language="JavaScript" type="text/javascript" src="/lib//jquery/dist/jquery.min.js"></script>
+    <script language="JavaScript" type="text/javascript" src="~/js/InformationArchitecture.js"></script>
+</head>
+<body>
+    <button type="reset" class="save_button" onclick="saveChanges()">Save</button>
+    <div class="admin_content_container">
+        <div class="adding_section">
+            <div onclick="openModal('category')" id="add_category" class="adding_button" style="visibility:visible">
+                + Add category
+            </div>
+            <div onclick="openModal('subcategory')" id="add_conference" class="adding_button">
+                + Add subcategory
+            </div>
+            <div onclick="openModal('team')" id="add_team" class="adding_button">
+                + Add team
+            </div>
+        </div>
+        <div class="content">
+            <div id="categories" class="column">
+
+            </div>
+            <div class="vert_line">
+                <img id="first_line" class="vert_image_svg" src="~/imagesAdminPage/InformationArchitecture/VerticalLine.svg" />
+            </div>
+            <div id="conferences" class="column"></div>
+            <div class="vert_line">
+                <img id="second_line" class="vert_image_svg" src="~/imagesAdminPage/InformationArchitecture/VerticalLine.svg" />
+            </div>
+            <div id="teams" class="column"></div>
+        </div>
+    </div>
+    <div id="modal" class="modal_window_container">
+        <form class="modal_window">
+            <input type="hidden" id="edit_id" />
+            <div id="modalTitle" class="modal_title">
+                Add new category
+            </div>
+            <div class="modal_label">
+                NAME
+            </div>
+            <input id="modal_input" class="modal_input" placeholder="Name your menu item" />
+            <div class="button_container">
+                <button type='button' onclick="closeModal()" class="cancel_button">Cancel</button>
+                <button id="add_edit_button" type='button' onclick="addNew()" class="add_button" >Add</button>
+            </div>
+        </form>
+    </div>
+    <div id="delete_modal" class="modal_window_container">
+        <form class="modal_window">
+            <input type="hidden" id="to_delete_input" />
+            <img class="bucket_image" src="~/imagesAdminPage/InformationArchitecture/Bucket.svg" />
+            <div id="delete_modal_title" class="are_you_about">
+                You are about to delete this
+            </div>
+            <div class="are_you_sure">
+                Are you sure?
+            </div>
+            <div class="button_container">
+                <button type='button' onclick="closeDeleteModal()" class="cancel_button">Cancel</button>
+                <button type='button' onclick="deleteOne()" class="add_button">Delete</button>
+            </div>
+        </form>
+    </div>
+    <div id="save_alert">
+        <div class="checkbox_container">
+            <img src="~/imagesAdminPage/InformationArchitecture/GreenCheckmark.svg" class="checkbox_image" />
+        </div>
+        <div class="text_container">
+            <div class="title">
+                Saved!
+            </div>
+            <div class="text">
+                The information architecture is successfuly saved!
+            </div>
+        </div>
+        <img src="~/imagesAdminPage/InformationArchitecture/Cross.svg" class="cross" onclick="closeConfirmation()" />
+    </div>
+</body>
+</html>

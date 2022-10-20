@@ -1,0 +1,235 @@
+﻿@{ ViewData["Title"] = "Home Page"; }
+@using System.Globalization;
+<div style="display:grid; grid-template-columns:250px 1fr 300px;">
+    <div style="display:grid; grid-template-columns:1fr 300px;">
+    </div>
+
+
+
+    <div class="main">
+
+        <div>
+            <div class="news-type vertical">ALL</div>
+            <div class="article-container">
+                @if (ViewBag.MainArticles != null)
+                {
+    @for (int i = 0; i < ViewBag.MainArticles.Count; i++)
+    {
+<div class="part" style="display:none;">
+    <div class="news-category">@ViewBag.MainArticles[i].CategoryName</div>
+    <div class="main-article">
+        <img class="news-picture" style="background-image: url(data:image/png;base64,@Convert.ToBase64String(ViewBag.MainArticles[i].Image)); background-size:cover; background-repeat: no-repeat" />
+        <div class="news-info-box">
+            @{ var fancyDate = ViewBag.MainArticles[i].DateTime.ToString("d", CultureInfo.CreateSpecificCulture("de-DE"));}
+            <p class="news-publish-date">Published / @fancyDate</p>
+            <p class="news-name">@ViewBag.MainArticles[i].Headline</p>
+            <p class="news-info">@ViewBag.MainArticles[i].Caption</p>
+            <a type="button" class="btn news-more" href="/Article/GetArticle?id=@ViewBag.MainArticles[i].Id">More</a>
+        </div>
+    </div>
+</div>}}
+            </div>
+            <script>
+                document.getElementById('1').style.color = "#D72130";
+                document.getElementsByClassName('part')[0].style.display = "block";
+            </script>
+            <div style="display:grid;grid-template-columns:repeat(5,1fr); margin:43px 0px 30px 0px">
+                @if (ViewBag.MainArticles != null)
+                {
+    @if (ViewBag.MainArticles.Count > 1)
+    {
+@foreach (var item in ViewBag.MainArticles)
+{
+    if (item is not null)
+    {
+<div class="mini-news" style="display:none">
+    <img class="mini-news-img" style="background-image: url(data:image/png;base64,@Convert.ToBase64String(item.Image)); background-repeat: no-repeat; background-size:contain;">
+    <p class="mini-news-name">@item.Headline</p>
+    <p class="mini-news-info">@item.Caption</p>
+    <div class="mini-news-link">
+        <a class="mini-news-href" href="/Article/GetArticle?id=@item.Id"><img class="svg" src="~/images/Arrow.svg" /></a>
+    </div>
+</div>                  }
+}}}
+            </div>
+            <script>
+                for (var i = 0; i < document.getElementsByClassName('mini-news').length; i++) {
+                    document.getElementsByClassName('mini-news')[i].style.display = "block";
+                }
+            </script>
+        </div>
+
+        <div class="breakdown">
+            <div class="separator-container">
+                <img class="separator" src="~/images/Breakdown.svg" />
+                <hr />
+            </div>
+            @{foreach (var breakdownSection in ViewBag.breakdownArticles)
+                {
+    @if (breakdownSection.Count > 0)
+    {
+<div class="breakdown-grid">
+    @for (int i = 0; i < breakdownSection.Count; i++)
+    {
+@if (i == 0)
+{
+<div class="breakdown-big" onclick="articleClick(@breakdownSection[i].Id)">
+    <div class="news-category">@breakdownSection[i].CategoryName</div>
+    <img class="news-picture" style="height: 250px;" src="data:image/png; base64, @Convert.ToBase64String(breakdownSection[i].Image)" />
+    <p class="mini-news-name" style="font-size: 22px; padding-left:15px; padding-right:70px;">@breakdownSection[i].Headline</p>
+    <img class="svg" src="~/images/Arrow.svg" />
+</div> }
+else
+{
+<div class="breakdown-small" onclick="articleClick(@breakdownSection[i].Id)">
+    <img class="news-picture" src="data:image/png; base64, @Convert.ToBase64String(breakdownSection[i].Image)" />
+    <div>
+        <p class="mini-news-name">@breakdownSection[i].Headline</p>
+        <p class="mini-news-info">@breakdownSection[i].Caption</p>
+    </div>
+    <img class="svg" src="~/images/Arrow.svg" />
+</div>}}
+</div>} } }
+            <script>
+                if (document.getElementsByClassName('breakdown-big')[0] == null) {
+                    document.getElementsByClassName('separator-container')[0].style.display = "none";
+                }
+
+            </script>
+        </div>
+
+        <div class="photo-of-the-day">
+            <img class="separator" src="~/images/PhotoOfTheDay_Separator.svg">
+            <hr />
+            <div style="margin-top:40px; height: 720px;">
+                <img class="photo-of-the-day-triangle" src="~/images/PhotoOfTheDay_Triangle.svg" />
+                <img class="news-picture" src="https://gumlet.assettype.com/freepressjournal/2021-08/d9dd45b7-4a13-47af-968b-384db833255d/Untitled_design___2021_08_06T110949_493.png" />
+                <div class="photo-of-the-day-text">
+                    <p class="photo-of-the-day-title">Messi leaves Barcelona</p>
+                    <p>Barcelona have announced that Lionel Messi will not be returning to the club after financial problems prevented them from agreeing with the forward on a new contract.</p>
+                    <p style="font-style: italic;">Photo Courtesy MCT</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="most-popular-commented">
+            <div>
+                <div style="display:flex">
+                    <nobr><p class="most-text">MOST POPULAR</p></nobr>
+                    <div class="most-line"></div>
+                </div>
+
+                <div id="MP1" class="breakdown-small">
+                    <img class="news-picture" src="https://img.championat.com/c/1350x759/news/big/p/y/kogda-nuzhno-otdavat-rebjonka-v-sport-rekomendacii_1574181249956324555.jpg" />
+                    <div>
+                        <p class="mini-news-name">Lorem ipsum</p>
+                        <p class="mini-news-info">Lorem ipsum dolor sit amet, consectetur</p>
+                    </div>
+                    <img class="svg" src="~/images/Arrow.svg" />
+                </div>
+
+                <div id="MP2" class="breakdown-small">
+                    <img class="news-picture" src="https://img.championat.com/c/1350x759/news/big/p/y/kogda-nuzhno-otdavat-rebjonka-v-sport-rekomendacii_1574181249956324555.jpg" />
+                    <div>
+                        <p class="mini-news-name">Lorem ipsum</p>
+                        <p class="mini-news-info">Lorem ipsum dolor sit amet, consectetur</p>
+                    </div>
+                    <img class="svg" src="~/images/Arrow.svg" />
+                </div>
+
+                <div id="MP3" class="breakdown-small">
+                    <img class="news-picture" src="https://img.championat.com/c/1350x759/news/big/p/y/kogda-nuzhno-otdavat-rebjonka-v-sport-rekomendacii_1574181249956324555.jpg" />
+                    <div>
+                        <p class="mini-news-name">Lorem ipsum</p>
+                        <p class="mini-news-info">Lorem ipsum dolor sit amet, consectetur</p>
+                    </div>
+                    <img class="svg" src="~/images/Arrow.svg" />
+                </div>
+
+            </div>
+
+            <div>
+                <div style="display:flex">
+                    <nobr><p class="most-text">MOST COMMENTED</p></nobr>
+                    <div class="most-line"></div>
+                </div>
+
+                <div id="MC1" class="breakdown-small">
+                    <img class="news-picture" src="https://img.championat.com/c/1350x759/news/big/p/y/kogda-nuzhno-otdavat-rebjonka-v-sport-rekomendacii_1574181249956324555.jpg" />
+                    <div>
+                        <p class="mini-news-name">Lorem ipsum</p>
+                        <p class="mini-news-info">Lorem ipsum dolor sit amet, consectetur</p>
+                    </div>
+                    <img class="svg" src="~/images/Arrow.svg" />
+                </div>
+
+                <div id="MC2" class="breakdown-small">
+                    <img class="news-picture" src="https://img.championat.com/c/1350x759/news/big/p/y/kogda-nuzhno-otdavat-rebjonka-v-sport-rekomendacii_1574181249956324555.jpg" />
+                    <div>
+                        <p class="mini-news-name">Lorem ipsum</p>
+                        <p class="mini-news-info">Lorem ipsum dolor sit amet, consectetur</p>
+                    </div>
+                    <img class="svg" src="~/images/Arrow.svg" />
+                </div>
+
+                <div id="MC3" class="breakdown-small">
+                    <img class="news-picture" src="https://img.championat.com/c/1350x759/news/big/p/y/kogda-nuzhno-otdavat-rebjonka-v-sport-rekomendacii_1574181249956324555.jpg" />
+                    <div>
+                        <p class="mini-news-name">Lorem ipsum</p>
+                        <p class="mini-news-info">Lorem ipsum dolor sit amet, consectetur</p>
+                    </div>
+                    <img class="svg" src="~/images/Arrow.svg" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="rightbar">
+        @if (ViewBag.MainArticles != null)
+        {
+@if (ViewBag.MainArticles.Count > 1)
+{
+<div class="mini-news-swichers">
+    <img class="mini-news-switch-button" src="~/images/LeftSwitcher.svg" onclick="changeToPrevious()" />
+    @for (int i = 0; i < ViewBag.MainArticles.Count; i++)
+    {
+<p id=@(i + 1) class="mini-news-number" onclick="changeArticle('@(i + 1)')">0@(i + 1)</p>}
+    <img class="mini-news-switch-button" src="~/images/RightSwitcher.svg" onclick="changeToNext()" />
+    <p class="news-text-switchers vertical">NEWS</p>
+</div>}}
+        <div class="reader-pool">
+            <div class="reader-pool-header">
+                <p style="font-size:14px; color:#434C5D;"><b>READER POOL</b></p>
+                <p class="reader-pool-date">12 MAR - 10 APR</p>
+            </div>
+            <div class="reader-pool-main">
+                <form>
+                    <p class="reader-pool-question">Sed the amet est, Ad Piscing eliam est valorem Nonumiam Est game?</p>
+                    <div style="display: flex; flex-direction: column;">
+                        <label class="container-radio">
+                            Yes
+                            <input type="radio" name="radio">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="container-radio">
+                            No
+                            <input type="radio" name="radio">
+                            <span class="checkmark"></span>
+                        </label>
+                        <label class="container-radio">
+                            Maybe
+                            <input type="radio" name="radio">
+                            <span class="checkmark"></span>
+                        </label>
+                        <div class="reader-pool-buttons">
+                            <button type="submit" class="btn pool">Next</button>
+                            <button type="submit" class="btn pool show-result">See the results</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>

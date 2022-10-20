@@ -1,0 +1,376 @@
+﻿.containerHeader {
+    height: 84px;
+    display: inline-block;
+}
+
+.containerBorderHeader {
+    border-bottom: solid;
+    border-bottom-width: 1px;
+    border-bottom-color: #e8e8e8;
+}
+
+#logoContainer {
+    width: 75%;
+    border-right: solid;
+    border-right-width: 1px;
+    border-right-color: #e8e8e8;
+}
+
+#logoLink {
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 22px;
+    color: white;
+    border: none;
+    text-align: center;
+    padding: 26px 70px;
+    display: inline-block;
+    background-color: #d72130;
+}
+
+#switcher_userLink {
+    width: 25%;
+    float: right;
+}
+
+#containerSwitcher {
+    position: absolute;
+    height: 35px;
+    width: 35px;
+    margin-left: 30px;
+    margin-top: 26px;
+}
+
+.tooltipTextSwitcher {
+    visibility: hidden;
+    width: 190px;
+    background-color: #35374a;
+    color: #fff;
+    text-align: center;
+    border-radius: 3px;
+    padding: 10px 0;
+    position: absolute;
+    top: 50px;
+    left: -17.5px;
+    margin-left: -60px;
+    z-index: 2;
+}
+
+.tooltipTextSwitcher::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #35374a transparent;
+}
+
+#containerSwitcher:hover .tooltipTextSwitcher {
+    visibility: visible;
+}
+
+#containerUserLink {
+    position: absolute;
+    height: 40px;
+    margin-top: 22px;
+    margin-left: 100px;
+    cursor: pointer;
+}
+
+#containerUserIcon {
+    position: absolute;
+    margin-top: 4px;
+}
+
+#userIcon {
+    height: 34px;
+    width: 34px;
+}
+
+#containerUsername {
+    position: relative;
+    margin-left: 45px;
+}
+
+#username {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#userPosition {
+    position: absolute;
+    font-size: 10px;
+    color: darkgrey;
+}
+
+#titleContainer {
+    width: 75%;
+}
+
+#interactButtonsContainer {
+    width: 25%;
+    float: right;
+}
+
+#currentTabName {
+    font-weight: bold;
+    margin-top: 30px;
+    margin-left: 90px;
+}
+
+#navContainerHeader {
+    height: 55px;
+    box-shadow: 0px 10px 15px -10px #cfcfcf;
+}
+
+#navHeader {
+    list-style-type: none;
+    margin-left: 50px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.navHeaderItem {
+    float: left;
+    padding-left: 25px;
+}
+
+.navHeaderLink {
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+    font-weight: bold;
+    color: #9c9c9c;
+}
+
+.navHeaderLink:hover {
+    text-decoration: none;
+    color: #d72130;
+}
+
+#containerSidebar {
+    border-right: solid;
+    border-right-width: 2px;
+    border-right-color: #e8e8e8;
+    position: absolute;
+    float: left;
+    padding-bottom: 100px;
+}
+
+.navSidebarItem {
+    position: relative;
+    display: block;
+    border: none;
+    margin: 45px 30px 0 30px;
+}
+
+.navSidebarImageTop {
+    display: none;
+    position: absolute;
+    /*top: 0;
+                left: 0;*/
+}
+
+.navSidebarItem:hover .navSidebarImageTop {
+    display: inline;
+}
+
+.navSidebarItem:hover .navSidebarImage {
+    visibility: hidden;
+}
+
+.SurveysIconRed {
+    left: 0;
+    top: 0;
+}
+
+.BannersIconRed {
+    left: 0;
+    top: 3px;
+}
+
+.LanguagesIconRed {
+    left: -0.5px;
+    top: 0;
+}
+
+.FooterIconRed {
+    left: 0;
+    top: 3px;
+}
+
+.SharesIconRed {
+    left: 0;
+    top: 1.5px;
+}
+
+.GroupIconRed {
+    left: -1px;
+    top: 2px;
+}
+
+.IAIconRed {
+    left: 1.5px;
+    top: 2px;
+}
+
+.TeamsIconRed {
+    left: 1.5px;
+    top: 1.5px;
+}
+
+.NewsPartnersIconRed {
+    left: 0px;
+    top: 1.5px;
+}
+
+.AdvertisingIconRed {
+    left: 0px;
+    top: 1.5px;
+}
+
+.tooltipTextSidebar {
+    visibility: hidden;
+    background-color: #35374a;
+    color: #fff;
+    text-align: center;
+    border-radius: 3px;
+    padding: 10px 0;
+    position: absolute;
+    z-index: 1;
+    top: -8px;
+    left: 50px;
+}
+
+.tooltipTextSidebar::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #35374a transparent transparent;
+}
+
+.navSidebarItem:hover .tooltipTextSidebar {
+    visibility: visible;
+}
+
+.tooltipSurveys {
+    width: 90px;
+}
+
+.tooltipBanners {
+    width: 90px;
+}
+
+.tooltipLanguages {
+    width: 110px;
+}
+
+.tooltipFooter {
+    width: 80px;
+}
+
+.tooltipSocialNetworks {
+    width: 150px;
+}
+
+.tooltipUsers {
+    width: 70px;
+}
+
+.tooltipIA {
+    width: 50px;
+}
+
+.tooltipTeams {
+    width: 80px;
+}
+
+.tooltipNewsPartners {
+    width: 140px;
+}
+
+.tooltipAdvertising {
+    width: 120px;
+}
+
+.accountMenuContent {
+    display: none;
+    position: absolute;
+    top: 75px;
+    right: 75px;
+    border-radius: 2px;
+    background-color: white;
+    min-width: 225px;
+    height: 263px;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.accountMenuLowerLink {
+    color: black;
+    padding: 0;
+    text-decoration: none;
+    padding: 10px 0 10px 30px;
+    font-size: 16px;
+}
+
+.accountMenuLowerLink:hover {
+    background-color: #fbe7e8;
+    text-decoration: none;
+    color: #d72130;
+}
+
+.show {
+    display: block;
+}
+
+.accountMenuElement {
+    display: block;
+}
+
+.accountMenuUserInfo {
+    margin-left: 30px;
+    margin-right: 30px;
+    display: block;
+}
+
+#accountMenuUsername {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#accountMenuEmail {
+    font-size: 14px;
+    color: grey;
+}
+
+.accountMenuButton {
+    width: 135px;
+    margin: 15px 0 20px 30px;
+    padding: 5px 0 5px 20px;
+    border-radius: 1px;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 15px;
+    color: white;
+    border: none;
+    background-color: #d72130;
+}
+
+.accountMenuButton:hover {
+    text-decoration: none;
+    color: white;
+}
+
+.accountMenuLogout {
+    border-top: solid;
+    border-top-width: 2px;
+    border-top-color: #e8e8e8;
+}

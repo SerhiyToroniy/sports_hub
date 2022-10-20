@@ -1,0 +1,61 @@
+﻿@model sports_hub.Models.Entities.ContactInfo
+
+    <style>
+        .required-field {
+            font-style: normal;
+            font-family: Open Sans;
+            font-weight: normal;
+            font-size: 10px;
+            line-height: 14px;
+            /* identical to box height */
+            color: #000000;
+            padding-left: 20px;
+            margin-top: 29px;
+        }
+
+        .required-and-buttons-area {
+            align-items: center;
+        }
+    </style>
+
+<div class="edit-form" id="EditForm1">
+    <form asp-action="EditAdmin">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="Id" />
+        <div class="edit-field">
+
+            <div class="edit-header">
+                <span> Contact Us </span>
+            </div>
+
+            <div class="edit-attributes-area">
+                <div class="headline-area">
+                    <label asp-for="Adress" class="headline">Adress</label>
+                    <input required asp-for="Adress" value=@ViewBag.AdminInfo.Adress class="input-headline">
+                </div>
+                <div class="headline-area">
+                    <label asp-for="Telephone" class="headline">Tel.</label>
+                    <input required asp-for="Telephone" value=@ViewBag.AdminInfo.Telephone class="input-headline">
+                </div>
+                <div class="headline-area">
+                    <label asp-for="Email" class="headline">E-MAIL</label>
+                    <input required asp-for="Email" value=@ViewBag.AdminInfo.Email class="input-headline">
+                </div>
+                <div class="required-and-buttons-area">
+                    <span class="required-field" style="text-align:left">All fields are required*</span>
+                    <div class="edit-area-buttons">
+                        <button class="cancel-button" onclick="closeEditForm()">Cancel</button>
+                        <input type="submit" value="Save" class="save-button">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    function closeEditForm1() {
+        document.getElementById("EditForm1").style.display = "none";
+    }
+</script>

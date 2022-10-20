@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - sports_hub</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/AdminPage/layout.css" />
+</head>
+<body onload="setColorForActiveHeaderPage(); setColorForActiveSidebarPage();">
+    <header>
+        <div class="containerBorderHeader">
+            <div class="containerHeader" id="logoContainer">
+                <a id="logoLink" asp-area="" asp-controller="Home" asp-action="Index">
+                    Sports Hub
+                </a>
+            </div>
+            <div class="containerHeader" id="switcher_userLink">
+                <div id="containerSwitcher">
+                    <a asp-area="" asp-controller="Home" asp-action="Index">
+                        <img src="~/imagesAdminPage/SwitcherIcon.svg" alt="">
+                    </a>
+                    <span class="tooltipTextSwitcher">Switch to user view</span>
+                </div>
+                <div id="containerUserLink" class="containerUserLinkclass" onclick="openAccountMenu()">
+                    <div id="containerUserIcon" class="UserLinkElement">
+                        <img id="userIcon" class="UserLinkElement" src="~/imagesAdminPage/user test icon.png" />
+                    </div>
+                    <div id="containerUsername" class="UserLinkElement">
+                        <span id="username" class="UserLinkElement">Name Surname</span><br />
+                        <span id="userPosition" class="UserLinkElement">Administrator</span>
+                    </div>
+                </div>
+                <div id="accountMenu" class="accountMenuContent">
+                    <span id="accountMenuUsername" class="accountMenuElement accountMenuUserInfo">Name Surname</span>
+                    <span id="accountMenuEmail" class="accountMenuElement accountMenuUserInfo">namesurname@email.com</span>
+                    <a class="accountMenuButton accountMenuElement" asp-area="" asp-controller="" asp-action="">VIEW PROFILE</a>
+                    <a class="accountMenuLowerLink accountMenuElement" asp-area="" asp-controller="" asp-action="">Personal</a>
+                    <a class="accountMenuLowerLink accountMenuElement" asp-area="" asp-controller="" asp-action="">Change password</a>
+                    <a class="accountMenuLowerLink accountMenuElement accountMenuLogout" asp-area="" asp-controller="" asp-action="">Log out</a>
+                </div>
+            </div>
+        </div>
+        <div class="containerBorderHeader">
+            <div id="titleContainer" class="containerHeader">
+                <h3 id="currentTabName">@ViewData["Title"]</h3>
+            </div>
+            <div id="interactButtonsContainer" class="containerHeader">
+                @RenderSection("SectionInteractButtons", false)
+            </div>
+        </div>
+        <div id="navContainerHeader">
+            <ul id="navHeader">
+                <li class="navHeaderItem">
+                    <a class="navHeaderLink" asp-area="" asp-controller="AdminPage" asp-action="Home">HOME</a>
+                </li>
+                <li class="navHeaderItem">
+                    <a class="navHeaderLink" asp-area="" asp-controller="AdminPage" asp-action="Articles" asp-route-category="NBA">NBA</a>
+                </li>
+                <li class="navHeaderItem">
+                    <a class="navHeaderLink" asp-area="" asp-controller="AdminPage" asp-action="Lifestyle">LIFESTYLE</a>
+                </li>
+                <li class="navHeaderItem">
+                    <a class="navHeaderLink" asp-area="" asp-controller="" asp-action="">VIDEO</a>
+                </li>
+                <li class="navHeaderItem">
+                    <a class="navHeaderLink" asp-area="" asp-controller="AdminPage" asp-action="Dealbook">DEALBOOK</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <div id="containerSidebar">
+        <div class="navSidebarItem">
+            <a asp-area="" asp-controller="AdminPage" asp-action="Surveys">
+                <img src="~/imagesAdminPage/SurveysIcon.svg" class="navSidebarImage">
+                <img src="~/imagesAdminPage/SurveysIconRed.svg" class="navSidebarImageTop SurveysIconRed">
+            </a>
+            <span class="tooltipTextSidebar tooltipSurveys">Surveys</span>
+        </div>
+        <div class="navSidebarItem tooltipSidebar">
+            <a asp-area="" asp-controller="AdminPage" asp-action="Banners">
+                <img src="~/imagesAdminPage/BannersIcon.svg" class="navSidebarImage">
+                <img src="~/imagesAdminPage/BannersIconRed.svg" class="navSidebarImageTop BannersIconRed">
+            </a>
+            <span class="tooltipTextSidebar tooltipBanners">Banners</span>
+        </div>
+        <div class="navSidebarItem tooltipSidebar">
+            <a asp-area="" asp-controller="AdminPage" asp-action="Languages">
+                <img src="~/imagesAdminPage/LanguagesIcon.svg" class="navSidebarImage">
+                <img src="~/imagesAdminPage/LanguagesIconRed.svg" class="navSidebarImageTop LanguagesIconRed">
+            </a>
+            <span class="tooltipTextSidebar tooltipLanguages">Languages</span>
+        </div>
+        <div class="navSidebarItem tooltipSidebar">
+            <a asp-area="" asp-controller="AdminPage" asp-action="FooterConfig" asp-route-section="CompanyInfo">
+                <img src="~/imagesAdminPage/FooterIcon.svg" class="navSidebarImage">
+                <img src="~/imagesAdminPage/FooterIconRed.svg" class="navSidebarImageTop FooterIconRed">
+            </a>
+            <span class="tooltipTextSidebar tooltipFooter">Footer</span>
+        </div>
+        <div class="navSidebarItem tooltipSidebar">
+            <a asp-area="" asp-controller="" asp-action="">
+                <img src="~/imagesAdminPage/SharesIcon.svg" class="navSidebarImage">
+                <img src="~/imagesAdminPage/SharesIconRed.svg" class="navSidebarImageTop SharesIconRed">
+            </a>
+            <span class="tooltipTextSidebar tooltipSocialNetworks">Social Networks</span>
+        </div>
+        <div class="navSidebarItem tooltipSidebar">
+            <a asp-area="" asp-controller="" asp-action="">
+                <img src="~/imagesAdminPage/GroupIcon.svg" class="navSidebarImage">
+                <img src="~/imagesAdminPage/GroupIconRed.svg" class="navSidebarImageTop GroupIconRed">
+            </a>
+            <span class="tooltipTextSidebar tooltipUsers">Users</span>
+        </div>
+        <div class="navSidebarItem tooltipSidebar">
+            <a asp-area="" asp-controller="AdminPage" asp-action="InformationArchitecture">
+                <img src="~/imagesAdminPage/IAIcon.svg" class="navSidebarImage">
+                <img src="~/imagesAdminPage/IAIconRed.svg" class="navSidebarImageTop IAIconRed">
+            </a>
+            <span class="tooltipTextSidebar tooltipIA">IA</span>
+        </div>
+        <div class="navSidebarItem tooltipSidebar">
+            <a asp-area="" asp-controller="" asp-action="">
+                <img src="~/imagesAdminPage/TeamsIcon.svg" class="navSidebarImage">
+                <img src="~/imagesAdminPage/TeamsIconRed.svg" class="navSidebarImageTop TeamsIconRed">
+            </a>
+            <span class="tooltipTextSidebar tooltipTeams">Teams</span>
+        </div>
+        <div class="navSidebarItem tooltipSidebar">
+            <a asp-area="" asp-controller="" asp-action="">
+                <img src="~/imagesAdminPage/NewsPartnersIcon.svg" class="navSidebarImage">
+                <img src="~/imagesAdminPage/NewsPartnersIconRed.svg" class="navSidebarImageTop NewsPartnersIconRed">
+            </a>
+            <span class="tooltipTextSidebar tooltipNewsPartners">News Partners</span>
+        </div>
+        <div class="navSidebarItem tooltipSidebar">
+            <a asp-area="" asp-controller="" asp-action="">
+                <img src="~/imagesAdminPage/AdvertisingIcon.svg" class="navSidebarImage">
+                <img src="~/imagesAdminPage/AdvertisingIconRed.svg" class="navSidebarImageTop AdvertisingIconRed">
+            </a>
+            <span class="tooltipTextSidebar tooltipAdvertising">Advertising</span>
+        </div>
+    </div>
+
+    @RenderBody()
+
+    <script>
+        function openAccountMenu() {
+            document.getElementById("accountMenu").classList.toggle("show");
+        }
+
+        function setColorForActiveHeaderPage() {
+            var navHeaderLinks = document.getElementsByClassName('navHeaderLink');
+            for (let i = 0; i < navHeaderLinks.length; i++) {
+                var navHeaderLink = navHeaderLinks[i];
+                if (navHeaderLink.textContent.toUpperCase() == "@ViewData["Title"]".toUpperCase()) {
+                    navHeaderLink.style.color = "#d72130";
+                }
+            }
+        }
+
+        function setColorForActiveSidebarPage() {
+            var navSidebarItems = document.getElementsByClassName('navSidebarItem');
+            if ("@ViewData["Title"]" == "Information Architecture") {
+                navSidebarItems[6].getElementsByTagName('img')[0].style.visibility = 'hidden';
+                navSidebarItems[6].getElementsByTagName('img')[1].style.display = 'inline';
+            }
+            for (let i = 0; i < navSidebarItems.length; i++) {
+                var navSidebarItem = navSidebarItems[i];
+                if (navSidebarItem.getElementsByTagName('span')[0].textContent.toUpperCase() == "@ViewData["Title"]".toUpperCase()) {
+                    navSidebarItem.getElementsByTagName('a')[0].getElementsByTagName('img')[0].style.visibility = 'hidden';
+                    navSidebarItem.getElementsByTagName('a')[0].getElementsByTagName('img')[1].style.display = 'inline';
+                }
+            }
+        }
+
+        window.addEventListener("click", function (event) {
+            if (!event.target.matches('.UserLinkElement') &&
+                !event.target.matches('#containerUserLink') &&
+                !event.target.matches('#accountMenu') &&
+                !event.target.matches('.accountMenuElement')) {
+                var dropdown = document.getElementById("accountMenu");
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+    </script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
